@@ -5,28 +5,19 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.api.villagedevin.model.persistence.User;
-import com.api.villagedevin.model.persistence.UserSpringSecurity;
 import com.api.villagedevin.model.repository.UserRepository;
 import com.api.villagedevin.model.transport.UserDTO;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
 
 	private final UserRepository userRepository;
-	private PasswordEncoder passwordEncoder;
 
-	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+	public UserService(UserRepository userRepository) {
 		this.userRepository = userRepository;
-		this.passwordEncoder = passwordEncoder;
 	}
 
 	public List<UserDTO> listAll() {
@@ -45,39 +36,44 @@ public class UserService implements UserDetailsService {
 
 		return userDTO;
 	}
+	
+	public ResponseEntity<HttpStatus> createroles(List<String> roles) {
+		
+		User user = this.getUserById(1);
+
+		this.userRepository.createRoles(user.getId(), roles);
+
+		return ResponseEntity.status(HttpStatus.CREATED).build();
+	}
 
 	public ResponseEntity<HttpStatus> create(User user) {
-		
-		String encode = passwordEncoder.encode(user.getPassword());
-		user.setPassword(encode);
-		
+
 		this.userRepository.save(user);
 
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
-	
-	public static UserSpringSecurity authenticated() {
-		try {
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			return new UserSpringSecurity((String) authentication.getPrincipal(), null, new ArrayList<>());
-		} catch (Exception e) {
-			return null;
-		}
+
+	public User getUserById(Integer id) {
+		User user = userRepository.findUserById(id);
+		List<String> roles = userRepository.fingRolesByUserId(id);
+		user.setRoles(roles);
+		System.out.println(user.getRoles());		
+		System.out.println(user.getCitizen());		
+		return userRepository.findUserById(id);
 	}
 
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		try {
-			User user = getUser(username);
-			return new UserSpringSecurity(user.getEmail(), user.getPassword(), user.getRoles());
-		} catch (UsernameNotFoundException e) {
-
-			throw new UsernameNotFoundException(username);
-		}
-	}
-
-	public User getUser(String email) {
-		return userRepository.findUserByEmail(email);
-	}
+//	public ResponseEntity<HttpStatus> create(User user) {
+//
+//		String encode = passwordEncoder.encode(user.getPassword());
+//		user.setPassword(encode);
+//
+//		this.userRepository.save(user);
+//
+//		return ResponseEntity.status(HttpStatus.CREATED).build();
+//	}
+//
+//	public User getUser(String email) {
+//		return userRepository.findUserByEmail(email);
+//	}
 
 }

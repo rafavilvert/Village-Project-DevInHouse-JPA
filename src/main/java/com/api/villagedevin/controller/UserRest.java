@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,9 +36,19 @@ public class UserRest {
 		return userService.getUsersByEmail(email);
 	}
 	
+	@GetMapping("/list-user/{id}")
+	public User getUserById(@PathVariable("id") Integer id) {
+		return userService.getUserById(id);
+	}
+	
 	@PostMapping("/create")
 	public ResponseEntity<HttpStatus> create(@RequestBody User user) {
 		return this.userService.create(user);
+	}
+	
+	@PostMapping("/create-roles")
+	public ResponseEntity<HttpStatus> create(@RequestBody List<String> roles) {
+		return this.userService.createroles(roles);
 	}
 
 }

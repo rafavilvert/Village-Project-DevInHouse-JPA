@@ -1,7 +1,7 @@
 package com.api.villagedevin.model.persistence;
 
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -31,7 +31,7 @@ public class User {
 	private String password;
 
 	@ElementCollection(fetch = FetchType.EAGER)
-	private Set<String> roles;
+	private List<String> roles;
 
 	@OneToOne()
 	@JoinColumn(name = "citizen_id", referencedColumnName = "id")
@@ -45,7 +45,7 @@ public class User {
 		this.email = email;
 	}
 
-	public User(String email, String password, Set<String> roles) {
+	public User(String email, String password, List<String> roles) {
 		this(email, password);
 		this.roles = roles;
 	}
@@ -87,12 +87,25 @@ public class User {
 		this.password = password;
 	}
 
-	public Set<String> getRoles() {
+	public List<String> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(Set<String> roles) {
+	public void setRoles(List<String> roles) {
 		this.roles = roles;
+	}
+
+	public void setCitizen(Citizen citizen) {
+		this.citizen = citizen;
+	}
+
+	public Citizen getCitizen() {
+		return citizen;
+	}
+
+	@Override
+	public String toString() {
+		return "User [email=" + email + ", password=" + password + ", roles=" + roles + ", citizen=" + citizen + "]";
 	}
 
 	@Override

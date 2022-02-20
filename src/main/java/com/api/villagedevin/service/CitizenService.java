@@ -8,16 +8,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.api.villagedevin.model.persistence.Citizen;
+import com.api.villagedevin.model.persistence.User;
 import com.api.villagedevin.model.repository.CitizenRepository;
 import com.api.villagedevin.model.transport.CitizenDTO;
+import com.api.villagedevin.model.transport.CreateCitizenAndUserDTO;
 
 @Service
 public class CitizenService {
 
 	private final CitizenRepository citizenRepository;
+	
+	private final UserService userService;
 
-	public CitizenService(CitizenRepository citizenRepository) {
+	public CitizenService(CitizenRepository citizenRepository, UserService userService) {
 		this.citizenRepository = citizenRepository;
+		this.userService = userService;
 	}
 
 	public List<CitizenDTO> listAll() {
@@ -76,8 +81,24 @@ public class CitizenService {
 		return citizensDTO;
 	}
 
-	public ResponseEntity<HttpStatus> create(Citizen citizen) {
+	public ResponseEntity<HttpStatus> create(CreateCitizenAndUserDTO createCitizenAndUserDTO) {
+		Citizen citizen = new Citizen();
+		citizen.setName(createCitizenAndUserDTO.getName());
+		citizen.setLastname(createCitizenAndUserDTO.getLastname());
+		citizen.setCPF(createCitizenAndUserDTO.getCpf());
+		citizen.setIncome(createCitizenAndUserDTO.getIncome());
+		citizen.setExpense(createCitizenAndUserDTO.getExpense());
+		citizen.setDataNascimento(createCitizenAndUserDTO.getBirthDate());
+		
 		this.citizenRepository.save(citizen);
+		
+		User user = new User();
+		user.setEmail(createCitizenAndUserDTO.getEmail());
+		user.setPassword(createCitizenAndUserDTO.getPassword());
+		user.setRoles(createCitizenAndUserDTO.getRoles());
+		user.setCitizen(citizen);
+		
+		this.userService.create(user);
 
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}

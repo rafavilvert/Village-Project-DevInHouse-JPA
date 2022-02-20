@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.api.villagedevin.model.persistence.Citizen;
 import com.api.villagedevin.model.transport.CitizenDTO;
+import com.api.villagedevin.model.transport.CreateCitizenAndUserDTO;
 import com.api.villagedevin.service.CitizenService;
 
 @RestController
@@ -65,8 +66,8 @@ public class CitizenRest {
 //	
 //	@PreAuthorize("hasAnyRole('ADMIN')")
 	@PostMapping("/create")
-	public ResponseEntity<HttpStatus> create(@RequestBody Citizen citizen) {
-		return this.citizenService.create(citizen);
+	public ResponseEntity<HttpStatus> create(@RequestBody CreateCitizenAndUserDTO createCitizenAndUserDTO) {
+		return this.citizenService.create(createCitizenAndUserDTO);
 	}
 
 //	
