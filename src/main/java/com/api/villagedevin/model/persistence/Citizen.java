@@ -37,10 +37,8 @@ public class Citizen {
 
 	@Column(name = "datanascimento", nullable = false)
 	private LocalDate dataNascimento;
-	
+
 	@OneToOne(mappedBy = "citizen")
-//	@OneToOne()
-//	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private User user;
 
 	public Citizen() {
