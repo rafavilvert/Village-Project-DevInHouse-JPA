@@ -17,7 +17,7 @@ import com.api.villagedevin.model.transport.UserDTO;
 import com.api.villagedevin.service.UserService;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class UserRest {
 	
 	private UserService userService;
@@ -46,9 +46,9 @@ public class UserRest {
 		return this.userService.create(user);
 	}
 	
-	@PostMapping("/create-roles")
-	public ResponseEntity<HttpStatus> create(@RequestBody List<String> roles) {
-		return this.userService.createroles(roles);
-	}
+//	@PostMapping("/create-roles")
+//	public ResponseEntity<HttpStatus> create(@RequestBody List<String> roles) {
+//		return this.userService.createroles(roles);
+//	}
 
 }
