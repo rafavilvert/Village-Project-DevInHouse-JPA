@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.api.villagedevin.model.persistence.Citizen;
 import com.api.villagedevin.model.transport.CitizenDTO;
 import com.api.villagedevin.model.transport.CreateCitizenAndUserDTO;
+import com.api.villagedevin.model.transport.VillageReportDTO;
 import com.api.villagedevin.service.CitizenService;
 
 @RestController
@@ -78,9 +79,9 @@ public class CitizenRest {
 
 //	
 //	@PreAuthorize("hasAnyRole('ADMIN')")
-//	@GetMapping("/village-report")
-//	public VillageReportDTO getReport() throws SQLException, CitizensNotFoundException, IllegalAccessException {
-//		return citizenService.getReport();
-//	}
+	@GetMapping("/village-report")
+	public VillageReportDTO getReport() throws IllegalAccessException {
+		return citizenService.getReport();
+	}
 
 }
