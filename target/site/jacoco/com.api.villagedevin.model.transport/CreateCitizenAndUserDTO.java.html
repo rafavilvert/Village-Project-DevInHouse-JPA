@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CreateCitizenAndUserDTO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">api.village-devin</a> &gt; <a href="index.source.html" class="el_package">com.api.villagedevin.model.transport</a> &gt; <span class="el_source">CreateCitizenAndUserDTO.java</span></div><h1>CreateCitizenAndUserDTO.java</h1><pre class="source lang-java linenums">package com.api.villagedevin.model.transport;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Objects;
+
+import com.api.villagedevin.model.persistence.Citizen;
+import com.api.villagedevin.model.persistence.User;
+
+public class CreateCitizenAndUserDTO {
+
+	private Integer id;
+	private String name;
+	private String lastname;
+	private String cpf;
+	private Double income;
+	private Double expense;
+	private LocalDate birthDate;
+
+	private String email;
+	private String password;
+	private List&lt;String&gt; roles;
+
+<span class="nc" id="L24">	public CreateCitizenAndUserDTO() {</span>
+
+<span class="nc" id="L26">	}</span>
+
+	public CreateCitizenAndUserDTO(String name, String lastname, String cpf, Double income, Double expense,
+<span class="nc" id="L29">			LocalDate birthDate, String email, String password, List&lt;String&gt; roles) {</span>
+<span class="nc" id="L30">		this.name = name;</span>
+<span class="nc" id="L31">		this.lastname = lastname;</span>
+<span class="nc" id="L32">		this.cpf = cpf;</span>
+<span class="nc" id="L33">		this.income = income;</span>
+<span class="nc" id="L34">		this.expense = expense;</span>
+<span class="nc" id="L35">		this.birthDate = birthDate;</span>
+<span class="nc" id="L36">		this.email = email;</span>
+<span class="nc" id="L37">		this.password = password;</span>
+<span class="nc" id="L38">		this.roles = roles;</span>
+<span class="nc" id="L39">	}</span>
+
+<span class="nc" id="L41">	public CreateCitizenAndUserDTO(Citizen citizen, User user) {</span>
+<span class="nc" id="L42">		this.name = citizen.getName();</span>
+<span class="nc" id="L43">		this.lastname = citizen.getLastname();</span>
+<span class="nc" id="L44">		this.cpf = citizen.getCPF();</span>
+<span class="nc" id="L45">		this.income = citizen.getIncome();</span>
+<span class="nc" id="L46">		this.expense = citizen.getExpense();</span>
+<span class="nc" id="L47">		this.birthDate = citizen.getDataNascimento();</span>
+<span class="nc" id="L48">		this.email = user.getEmail();</span>
+<span class="nc" id="L49">		this.password = user.getPassword();</span>
+<span class="nc" id="L50">		this.roles = user.getRoles();</span>
+
+<span class="nc" id="L52">	}</span>
+
+	public Integer getId() {
+<span class="nc" id="L55">		return id;</span>
+	}
+
+	public String getName() {
+<span class="nc" id="L59">		return name;</span>
+	}
+
+	public void setName(String name) {
+<span class="nc" id="L63">		this.name = name;</span>
+<span class="nc" id="L64">	}</span>
+
+	public String getLastname() {
+<span class="nc" id="L67">		return lastname;</span>
+	}
+
+	public void setLastname(String lastname) {
+<span class="nc" id="L71">		this.lastname = lastname;</span>
+<span class="nc" id="L72">	}</span>
+
+	public String getCpf() {
+<span class="nc" id="L75">		return cpf;</span>
+	}
+
+	public void setCpf(String cpf) {
+<span class="nc" id="L79">		this.cpf = cpf;</span>
+<span class="nc" id="L80">	}</span>
+
+	public Double getIncome() {
+<span class="nc" id="L83">		return income;</span>
+	}
+
+	public void setIncome(Double income) {
+<span class="nc" id="L87">		this.income = income;</span>
+<span class="nc" id="L88">	}</span>
+
+	public Double getExpense() {
+<span class="nc" id="L91">		return expense;</span>
+	}
+
+	public void setExpense(Double expense) {
+<span class="nc" id="L95">		this.expense = expense;</span>
+<span class="nc" id="L96">	}</span>
+
+	public LocalDate getBirthDate() {
+<span class="nc" id="L99">		return birthDate;</span>
+	}
+
+	public void setBirthDate(LocalDate birthDate) {
+<span class="nc" id="L103">		this.birthDate = birthDate;</span>
+<span class="nc" id="L104">	}</span>
+
+	public String getEmail() {
+<span class="nc" id="L107">		return email;</span>
+	}
+
+	public void setEmail(String email) {
+<span class="nc" id="L111">		this.email = email;</span>
+<span class="nc" id="L112">	}</span>
+
+	public String getPassword() {
+<span class="nc" id="L115">		return password;</span>
+	}
+
+	public void setPassword(String password) {
+<span class="nc" id="L119">		this.password = password;</span>
+<span class="nc" id="L120">	}</span>
+
+	public List&lt;String&gt; getRoles() {
+<span class="nc" id="L123">		return roles;</span>
+	}
+
+	public void setRoles(List&lt;String&gt; roles) {
+<span class="nc" id="L127">		this.roles = roles;</span>
+<span class="nc" id="L128">	}</span>
+
+	@Override
+	public String toString() {
+<span class="nc" id="L132">		return &quot;CreateCitizenAndUserDTO [name=&quot; + name + &quot;, lastname=&quot; + lastname + &quot;, cpf=&quot; + cpf + &quot;, income=&quot;</span>
+				+ income + &quot;, expense=&quot; + expense + &quot;, birthDate=&quot; + birthDate + &quot;, email=&quot; + email + &quot;, password=&quot;
+				+ password + &quot;, roles=&quot; + roles + &quot;]&quot;;
+	}
+
+	@Override
+	public int hashCode() {
+<span class="nc" id="L139">		return Objects.hash(email);</span>
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+<span class="nc bnc" id="L144" title="All 2 branches missed.">		if (this == obj)</span>
+<span class="nc" id="L145">			return true;</span>
+<span class="nc bnc" id="L146" title="All 2 branches missed.">		if (obj == null)</span>
+<span class="nc" id="L147">			return false;</span>
+<span class="nc bnc" id="L148" title="All 2 branches missed.">		if (getClass() != obj.getClass())</span>
+<span class="nc" id="L149">			return false;</span>
+<span class="nc" id="L150">		CreateCitizenAndUserDTO other = (CreateCitizenAndUserDTO) obj;</span>
+<span class="nc" id="L151">		return Objects.equals(email, other.email);</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

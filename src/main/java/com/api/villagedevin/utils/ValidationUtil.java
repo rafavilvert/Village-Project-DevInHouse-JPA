@@ -5,11 +5,19 @@ import java.util.regex.Pattern;
 public class ValidationUtil {
 
 	public static boolean isValidUsername(String username) {
+		if (username == null) {
+			throw new IllegalArgumentException("Email está nulo!");
+		}
+
 		final Pattern pattern = Pattern.compile("^[a-z0-9.]+@[a-z0-9]+.[a-z]+.([a-z]+)?$");
 		return pattern.matcher(username).matches();
+
 	}
 
 	public static boolean isValidPassword(String password) {
+		if (password == null) {
+			throw new IllegalArgumentException("Password está nulo!");
+		}
 		final Pattern pattern = Pattern
 				.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$");
 		return pattern.matcher(password).matches();

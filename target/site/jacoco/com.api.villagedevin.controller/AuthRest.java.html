@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthRest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">api.village-devin</a> &gt; <a href="index.source.html" class="el_package">com.api.villagedevin.controller</a> &gt; <span class="el_source">AuthRest.java</span></div><h1>AuthRest.java</h1><pre class="source lang-java linenums">package com.api.villagedevin.controller;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.api.villagedevin.model.persistence.UserSpringSecurity;
+import com.api.villagedevin.model.transport.MailDTO;
+import com.api.villagedevin.service.AuthService;
+import com.api.villagedevin.service.UserService;
+import com.api.villagedevin.utils.JWTUtil;
+
+@RestController
+@RequestMapping(&quot;/auth&quot;)
+public class AuthRest {
+
+	private JWTUtil jwtUtil;
+
+	private AuthService authService;
+
+<span class="fc" id="L25">	public AuthRest(JWTUtil jwtUtil, AuthService authService) {</span>
+<span class="fc" id="L26">		this.jwtUtil = jwtUtil;</span>
+<span class="fc" id="L27">		this.authService = authService;</span>
+<span class="fc" id="L28">	}</span>
+
+	@PostMapping(&quot;/refresh-token&quot;)
+	public ResponseEntity&lt;Void&gt; refreshToken(HttpServletResponse response) {
+<span class="nc" id="L32">		UserSpringSecurity userSpringSecurity = UserService.authenticated();</span>
+<span class="nc" id="L33">		String newToken = jwtUtil.generateToken(userSpringSecurity.getUsername());</span>
+<span class="nc" id="L34">		response.addHeader(&quot;Authorization&quot;, &quot;Bearer &quot; + newToken);</span>
+<span class="nc" id="L35">		return ResponseEntity.noContent().build();</span>
+	}
+
+	@PostMapping(&quot;/forgot&quot;)
+	public ResponseEntity&lt;Void&gt; forgot(@RequestBody MailDTO mail) {
+<span class="nc" id="L40">		System.out.println(mail.getEmail());</span>
+<span class="nc" id="L41">		authService.sendNewPass(mail.getEmail());</span>
+<span class="nc" id="L42">		return ResponseEntity.noContent().build();</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

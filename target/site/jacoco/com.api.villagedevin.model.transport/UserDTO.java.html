@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserDTO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">api.village-devin</a> &gt; <a href="index.source.html" class="el_package">com.api.villagedevin.model.transport</a> &gt; <span class="el_source">UserDTO.java</span></div><h1>UserDTO.java</h1><pre class="source lang-java linenums">package com.api.villagedevin.model.transport;
+
+import java.util.List;
+import java.util.Objects;
+
+import com.api.villagedevin.model.persistence.User;
+
+public class UserDTO {
+
+	private String email;
+
+	private String password;
+
+	private List&lt;String&gt; roles;
+
+<span class="nc" id="L16">	public UserDTO() {</span>
+<span class="nc" id="L17">	}</span>
+
+<span class="fc" id="L19">	public UserDTO(String email) {</span>
+<span class="fc" id="L20">		this.email = email;</span>
+<span class="fc" id="L21">	}</span>
+
+<span class="fc" id="L23">	public UserDTO(User user) {</span>
+<span class="fc" id="L24">		this.email = user.getEmail();</span>
+<span class="fc" id="L25">		this.password = user.getPassword();</span>
+<span class="fc" id="L26">		this.roles = user.getRoles();</span>
+<span class="fc" id="L27">	}</span>
+
+	public String getEmail() {
+<span class="nc" id="L30">		return email;</span>
+	}
+
+	public void setEmail(String email) {
+<span class="nc" id="L34">		this.email = email;</span>
+<span class="nc" id="L35">	}</span>
+
+	public String getPassword() {
+<span class="nc" id="L38">		return password;</span>
+	}
+
+	public void setPassword(String password) {
+<span class="nc" id="L42">		this.password = password;</span>
+<span class="nc" id="L43">	}</span>
+
+	public List&lt;String&gt; getRoles() {
+<span class="nc" id="L46">		return roles;</span>
+	}
+
+	public void setRoles(List&lt;String&gt; roles) {
+<span class="nc" id="L50">		this.roles = roles;</span>
+<span class="nc" id="L51">	}</span>
+
+	@Override
+	public int hashCode() {
+<span class="nc" id="L55">		return Objects.hash(email);</span>
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+<span class="nc bnc" id="L60" title="All 2 branches missed.">		if (this == obj)</span>
+<span class="nc" id="L61">			return true;</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">		if (obj == null)</span>
+<span class="nc" id="L63">			return false;</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">		if (getClass() != obj.getClass())</span>
+<span class="nc" id="L65">			return false;</span>
+<span class="nc" id="L66">		UserDTO other = (UserDTO) obj;</span>
+<span class="nc" id="L67">		return Objects.equals(email, other.email);</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

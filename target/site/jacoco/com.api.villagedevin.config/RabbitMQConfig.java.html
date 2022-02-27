@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RabbitMQConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">api.village-devin</a> &gt; <a href="index.source.html" class="el_package">com.api.villagedevin.config</a> &gt; <span class="el_source">RabbitMQConfig.java</span></div><h1>RabbitMQConfig.java</h1><pre class="source lang-java linenums">package com.api.villagedevin.config;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+<span class="fc" id="L15">public class RabbitMQConfig {</span>
+
+	@Bean
+	public MessageConverter getMessageConverter() {
+<span class="fc" id="L19">		return new Jackson2JsonMessageConverter();</span>
+	}
+
+	@Bean
+	public Queue getReportQueue() {
+<span class="fc" id="L24">		Map&lt;String, Object&gt; arguments = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L25">		arguments.put(&quot;x-message-ttl&quot;, 5000);</span>
+<span class="fc" id="L26">		return new Queue(&quot;devin.report&quot;, true, false, false, arguments);</span>
+	}
+
+	@Bean
+	public DirectExchange getReportExchange() {
+<span class="fc" id="L31">		return new DirectExchange(&quot;direct.report&quot;, true, false);</span>
+	}
+
+	@Bean
+	public Binding getReportBindingReportQueueToReportExchange() {
+<span class="fc" id="L36">		Map&lt;String, Object&gt; arguments = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L37">		return new Binding(&quot;devin.report&quot;, Binding.DestinationType.QUEUE, &quot;direct.report&quot;, &quot;devin.report&quot;, arguments);</span>
+	}
+
+	@Bean
+	public Queue getReportQueueDLX() {
+<span class="fc" id="L42">		Map&lt;String, Object&gt; arguments = new HashMap&lt;&gt;();</span>
+
+<span class="fc" id="L44">		return new Queue(&quot;devin.report.dlx&quot;, true, false, false, arguments);</span>
+	}
+
+	@Bean
+	public DirectExchange getReportExchangeDLX() {
+<span class="fc" id="L49">		return new DirectExchange(&quot;direct.report.dlx&quot;, true, false);</span>
+	}
+
+	@Bean
+	public Binding getReportBindingReportQueueToReportExchangeDLX() {
+<span class="fc" id="L54">		Map&lt;String, Object&gt; arguments = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L55">		return new Binding(&quot;devin.report.dlx&quot;, Binding.DestinationType.QUEUE, &quot;direct.report.dlx&quot;, &quot;devin.report.dlx&quot;,</span>
+				arguments);
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

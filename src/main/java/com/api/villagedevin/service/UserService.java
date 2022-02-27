@@ -10,8 +10,6 @@ import javax.transaction.Transactional.TxType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,6 +22,7 @@ import com.api.villagedevin.model.persistence.User;
 import com.api.villagedevin.model.persistence.UserSpringSecurity;
 import com.api.villagedevin.model.repository.UserRepository;
 import com.api.villagedevin.model.transport.UserDTO;
+import com.api.villagedevin.utils.ValidationUtil;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -57,7 +56,7 @@ public class UserService implements UserDetailsService {
 	public List<UserDTO> getUsersByEmail(String email) {
 		List<UserDTO> userDTO = new ArrayList<>();
 		this.LOG.info("Buscando Usuários no Banco por email");
-		Iterable<User> iterable = this.userRepository.findByEmail(email);
+		Iterable<User> iterable = this.userRepository.findByEmailContaining(email);
 
 		iterable.forEach(user -> userDTO.add(new UserDTO(user)));
 
@@ -71,15 +70,6 @@ public class UserService implements UserDetailsService {
 
 	}
 
-//	public ResponseEntity<HttpStatus> createroles(List<String> roles) {
-//
-//		User user = this.getUserById(1);
-//
-//		this.userRepository.createRoles(user.getId(), roles);
-//
-//		return ResponseEntity.status(HttpStatus.CREATED).build();
-//	}
-
 	@Transactional(value = TxType.REQUIRED)
 	public void update(User user) {
 		this.LOG.info("Atualizando usuário...");
@@ -87,18 +77,28 @@ public class UserService implements UserDetailsService {
 		this.LOG.info("Usuário atualizado.");
 	}
 
-	public ResponseEntity<HttpStatus> create(User user) {
+	public User create(User user) throws IllegalArgumentException {
+		if (user == null) {
+			throw new IllegalArgumentException("Usuário Nulo");
+		}
+
+		if (!ValidationUtil.isValidUsername(user.getEmail())) {
+			this.LOG.info("Email inválido.");
+			throw new IllegalArgumentException("Email inválido");
+		}
+
+		if (!ValidationUtil.isValidPassword(user.getPassword())) {
+			this.LOG.info("enha inválida.");
+			throw new IllegalArgumentException("Senha inválida");
+		}
+
 		String passwordEnconde = passwordEncoder.encode(user.getPassword());
 		user.setPassword(passwordEnconde);
 		this.LOG.info("Salvando usuário no Banco...");
 
-		if (user == null) {
-			this.LOG.info("Problemas para salva usuário.");
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-		} else {
-			this.userRepository.save(user);
-			return ResponseEntity.status(HttpStatus.CREATED).build();
-		}
+		this.userRepository.save(user);
+		this.LOG.info("Usuário salvo com sucesso!");
+		return user;
 
 	}
 
@@ -138,19 +138,5 @@ public class UserService implements UserDetailsService {
 	public User getUser(String email) {
 		return userRepository.findUserByEmail(email);
 	}
-
-//	public ResponseEntity<HttpStatus> create(User user) {
-//
-//		String encode = passwordEncoder.encode(user.getPassword());
-//		user.setPassword(encode);
-//
-//		this.userRepository.save(user);
-//
-//		return ResponseEntity.status(HttpStatus.CREATED).build();
-//	}
-//
-//	public User getUser(String email) {
-//		return userRepository.findUserByEmail(email);
-//	}
 
 }

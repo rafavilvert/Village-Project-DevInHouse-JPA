@@ -16,6 +16,7 @@ import com.api.villagedevin.model.repository.CitizenRepository;
 import com.api.villagedevin.model.transport.CitizenDTO;
 import com.api.villagedevin.model.transport.CreateCitizenAndUserDTO;
 import com.api.villagedevin.model.transport.VillageReportDTO;
+import com.api.villagedevin.utils.ValidationUtil;
 
 @Service
 public class CitizenService {
@@ -151,7 +152,25 @@ public class CitizenService {
 		return citizensDTO;
 	}
 
-	public ResponseEntity<HttpStatus> create(CreateCitizenAndUserDTO createCitizenAndUserDTO) {
+	public ResponseEntity<HttpStatus> create(CreateCitizenAndUserDTO createCitizenAndUserDTO) throws IllegalAccessException {
+		
+		if (createCitizenAndUserDTO == null) {
+			throw new IllegalAccessException("O cidadão está nulo!");
+		}
+
+		if (!ValidationUtil.isValidName(createCitizenAndUserDTO.getName())) {
+			throw new IllegalAccessException("Nome inválido");
+		}
+
+		if (!ValidationUtil.isValidName(createCitizenAndUserDTO.getLastname())) {
+			throw new IllegalAccessException("Sobrenome inválido");
+		}
+
+		if (!ValidationUtil.isValidCPF(createCitizenAndUserDTO.getCpf())) {
+			throw new IllegalAccessException("CPF inválido");
+		}
+
+		
 		Citizen citizen = new Citizen();
 		citizen.setName(createCitizenAndUserDTO.getName());
 		citizen.setLastname(createCitizenAndUserDTO.getLastname());

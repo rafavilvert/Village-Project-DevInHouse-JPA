@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CitizenService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">api.village-devin</a> &gt; <a href="index.source.html" class="el_package">com.api.villagedevin.service</a> &gt; <span class="el_source">CitizenService.java</span></div><h1>CitizenService.java</h1><pre class="source lang-java linenums">package com.api.villagedevin.service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import com.api.villagedevin.model.persistence.Citizen;
+import com.api.villagedevin.model.persistence.User;
+import com.api.villagedevin.model.repository.CitizenRepository;
+import com.api.villagedevin.model.transport.CitizenDTO;
+import com.api.villagedevin.model.transport.CreateCitizenAndUserDTO;
+import com.api.villagedevin.model.transport.VillageReportDTO;
+import com.api.villagedevin.utils.ValidationUtil;
+
+@Service
+public class CitizenService {
+
+<span class="fc" id="L24">	private final Logger LOG = LogManager.getLogger(CitizenService.class);</span>
+
+	@Value(&quot;${VILLAGE_BUDGET}&quot;)
+	private Double TotalRevenueVillage;
+
+	private final CitizenRepository citizenRepository;
+
+	private final UserService userService;
+
+<span class="fc" id="L33">	public CitizenService(CitizenRepository citizenRepository, UserService userService) {</span>
+<span class="fc" id="L34">		this.citizenRepository = citizenRepository;</span>
+<span class="fc" id="L35">		this.userService = userService;</span>
+<span class="fc" id="L36">	}</span>
+
+	public List&lt;CitizenDTO&gt; listAll() {
+<span class="nc" id="L39">		List&lt;CitizenDTO&gt; citizensDTO = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L40">		this.LOG.info(&quot;Buscando cidadãos no Banco...&quot;);</span>
+<span class="nc" id="L41">		Iterable&lt;Citizen&gt; iterable = this.citizenRepository.findAll();</span>
+<span class="nc" id="L42">		iterable.forEach(citizen -&gt; citizensDTO.add(new CitizenDTO(citizen)));</span>
+
+<span class="nc bnc" id="L44" title="All 4 branches missed.">		if (citizensDTO == null || citizensDTO.isEmpty()) {</span>
+<span class="nc" id="L45">			this.LOG.info(&quot;Nenhum cidadão encontrado no Banco...&quot;);</span>
+<span class="nc" id="L46">			return citizensDTO;</span>
+		} else {
+<span class="nc" id="L48">			this.LOG.info(&quot;Cidadãos encontrados com sucesso!&quot;);</span>
+<span class="nc" id="L49">			return citizensDTO;</span>
+		}
+
+	}
+
+	public List&lt;String&gt; listCitizensNames() {
+<span class="nc" id="L55">		List&lt;String&gt; citizensName = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L56">		this.LOG.info(&quot;Buscando nomes no Banco.&quot;);</span>
+<span class="nc" id="L57">		List&lt;String&gt; listCitizensName = this.citizenRepository.listCitizensName();</span>
+<span class="nc" id="L58">		citizensName.addAll(listCitizensName);</span>
+
+<span class="nc bnc" id="L60" title="All 4 branches missed.">		if (citizensName == null || citizensName.isEmpty()) {</span>
+<span class="nc" id="L61">			this.LOG.info(&quot;Nenhum nome encontrado.&quot;);</span>
+<span class="nc" id="L62">			return citizensName;</span>
+		} else {
+<span class="nc" id="L64">			this.LOG.info(&quot;Nomes encontrados com sucesso!&quot;);</span>
+<span class="nc" id="L65">			return citizensName;</span>
+		}
+
+	}
+
+	public Citizen listCitizens(Integer id) {
+<span class="nc" id="L71">		this.LOG.info(&quot;Buscando cidadão no Banco...&quot;);</span>
+
+<span class="nc" id="L73">		Citizen citizen = this.citizenRepository.findAllById(id);</span>
+
+<span class="nc bnc" id="L75" title="All 2 branches missed.">		if (citizen == null) {</span>
+<span class="nc" id="L76">			this.LOG.info(&quot;Nenhum cidadão encontrado.&quot;);</span>
+<span class="nc" id="L77">			return citizen;</span>
+		} else {
+<span class="nc" id="L79">			this.LOG.info(&quot;Cidadão encontrado com sucesso&quot;);</span>
+<span class="nc" id="L80">			return citizen;</span>
+		}
+
+	}
+
+	public CitizenDTO getById(Integer id) {
+<span class="nc" id="L86">		this.LOG.info(&quot;Buscando cidadão no Banco...&quot;);</span>
+<span class="nc" id="L87">		Citizen citizen = this.citizenRepository.findAllById(id);</span>
+
+<span class="nc bnc" id="L89" title="All 2 branches missed.">		if (citizen == null) {</span>
+<span class="nc" id="L90">			this.LOG.info(&quot;Nenhum cidadão encontrado.&quot;);</span>
+<span class="nc" id="L91">			return new CitizenDTO(citizen);</span>
+		} else {
+<span class="nc" id="L93">			this.LOG.info(&quot;Cidadão encontrado com sucesso!&quot;);</span>
+<span class="nc" id="L94">			return new CitizenDTO(citizen);</span>
+		}
+	}
+
+	public List&lt;CitizenDTO&gt; getCitizensByName(String name) {
+<span class="nc" id="L99">		this.LOG.info(&quot;Buscando cidadão por nome no Banco...&quot;);</span>
+<span class="nc" id="L100">		List&lt;CitizenDTO&gt; citizensDTO = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L101">		Iterable&lt;Citizen&gt; itarable = this.citizenRepository.findByName(name);</span>
+<span class="nc" id="L102">		itarable.forEach(citizen -&gt; citizensDTO.add(new CitizenDTO(citizen)));</span>
+
+<span class="nc bnc" id="L104" title="All 4 branches missed.">		if (citizensDTO == null || citizensDTO.isEmpty()) {</span>
+<span class="nc" id="L105">			this.LOG.info(&quot;Nenhum cidadão encontrado no Banco.&quot;);</span>
+<span class="nc" id="L106">			return citizensDTO;</span>
+		} else {
+<span class="nc" id="L108">			this.LOG.info(&quot;Cidadãos encontrados com sucesso!&quot;);</span>
+<span class="nc" id="L109">			return citizensDTO;</span>
+		}
+
+	}
+
+	public List&lt;CitizenDTO&gt; getCitizensByMonth(Integer month) {
+<span class="nc" id="L115">		List&lt;CitizenDTO&gt; citizensDTO = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L116">		this.LOG.info(&quot;Buscando cidadão por mês no Banco...&quot;);</span>
+<span class="nc" id="L117">		List&lt;Citizen&gt; citizens = this.citizenRepository.findByMonth(month);</span>
+
+<span class="nc bnc" id="L119" title="All 4 branches missed.">		if (citizens == null || citizens.isEmpty()) {</span>
+<span class="nc" id="L120">			this.LOG.info(&quot;Nenhum cidadão encontrado no Banco.&quot;);</span>
+<span class="nc" id="L121">			return citizensDTO;</span>
+		}
+
+<span class="nc bnc" id="L124" title="All 2 branches missed.">		for (Citizen citizen : citizens) {</span>
+<span class="nc" id="L125">			CitizenDTO dto = new CitizenDTO(citizen.getName(), citizen.getLastname(), citizen.getCPF(),</span>
+<span class="nc" id="L126">					citizen.getIncome(), citizen.getExpense(), citizen.getDataNascimento());</span>
+<span class="nc" id="L127">			citizensDTO.add(dto);</span>
+<span class="nc" id="L128">		}</span>
+
+<span class="nc" id="L130">		this.LOG.info(&quot;Cidadão(s) encontrado com sucesso!&quot;);</span>
+
+<span class="nc" id="L132">		return citizensDTO;</span>
+	}
+
+	public List&lt;CitizenDTO&gt; getCitizensByAge(Integer age) {
+<span class="nc" id="L136">		List&lt;CitizenDTO&gt; citizensDTO = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L137">		this.LOG.info(&quot;Buscando cidadão por idade no Banco...&quot;);</span>
+<span class="nc" id="L138">		List&lt;Citizen&gt; citizens = this.citizenRepository.findByAge(age);</span>
+
+<span class="nc bnc" id="L140" title="All 4 branches missed.">		if (citizens == null || citizens.isEmpty()) {</span>
+<span class="nc" id="L141">			this.LOG.info(&quot;Nenhum cidadão encontrado.&quot;);</span>
+<span class="nc" id="L142">			return citizensDTO;</span>
+		}
+
+<span class="nc bnc" id="L145" title="All 2 branches missed.">		for (Citizen citizen : citizens) {</span>
+<span class="nc" id="L146">			CitizenDTO dto = new CitizenDTO(citizen.getName(), citizen.getLastname(), citizen.getCPF(),</span>
+<span class="nc" id="L147">					citizen.getIncome(), citizen.getExpense(), citizen.getDataNascimento());</span>
+<span class="nc" id="L148">			citizensDTO.add(dto);</span>
+<span class="nc" id="L149">		}</span>
+
+<span class="nc" id="L151">		this.LOG.info(&quot;Cidadãos encontrados com sucesso!&quot;);</span>
+<span class="nc" id="L152">		return citizensDTO;</span>
+	}
+
+	public ResponseEntity&lt;HttpStatus&gt; create(CreateCitizenAndUserDTO createCitizenAndUserDTO) throws IllegalAccessException {
+		
+<span class="nc bnc" id="L157" title="All 2 branches missed.">		if (createCitizenAndUserDTO == null) {</span>
+<span class="nc" id="L158">			throw new IllegalAccessException(&quot;O cidadão está nulo!&quot;);</span>
+		}
+
+<span class="nc bnc" id="L161" title="All 2 branches missed.">		if (!ValidationUtil.isValidName(createCitizenAndUserDTO.getName())) {</span>
+<span class="nc" id="L162">			throw new IllegalAccessException(&quot;Nome inválido&quot;);</span>
+		}
+
+<span class="nc bnc" id="L165" title="All 2 branches missed.">		if (!ValidationUtil.isValidName(createCitizenAndUserDTO.getLastname())) {</span>
+<span class="nc" id="L166">			throw new IllegalAccessException(&quot;Sobrenome inválido&quot;);</span>
+		}
+
+<span class="nc bnc" id="L169" title="All 2 branches missed.">		if (!ValidationUtil.isValidCPF(createCitizenAndUserDTO.getCpf())) {</span>
+<span class="nc" id="L170">			throw new IllegalAccessException(&quot;CPF inválido&quot;);</span>
+		}
+
+		
+<span class="nc" id="L174">		Citizen citizen = new Citizen();</span>
+<span class="nc" id="L175">		citizen.setName(createCitizenAndUserDTO.getName());</span>
+<span class="nc" id="L176">		citizen.setLastname(createCitizenAndUserDTO.getLastname());</span>
+<span class="nc" id="L177">		citizen.setCPF(createCitizenAndUserDTO.getCpf());</span>
+<span class="nc" id="L178">		citizen.setIncome(createCitizenAndUserDTO.getIncome());</span>
+<span class="nc" id="L179">		citizen.setExpense(createCitizenAndUserDTO.getExpense());</span>
+<span class="nc" id="L180">		citizen.setDataNascimento(createCitizenAndUserDTO.getBirthDate());</span>
+
+<span class="nc" id="L182">		this.LOG.info(&quot;Salvando cidadão no Banco...&quot;);</span>
+<span class="nc" id="L183">		this.citizenRepository.save(citizen);</span>
+<span class="nc" id="L184">		this.LOG.info(&quot;Cidadão salvo com sucesso!&quot;);</span>
+
+<span class="nc" id="L186">		User user = new User();</span>
+<span class="nc" id="L187">		user.setEmail(createCitizenAndUserDTO.getEmail());</span>
+<span class="nc" id="L188">		user.setPassword(createCitizenAndUserDTO.getPassword());</span>
+<span class="nc" id="L189">		user.setRoles(createCitizenAndUserDTO.getRoles());</span>
+<span class="nc" id="L190">		user.setCitizen(citizen);</span>
+
+<span class="nc" id="L192">		this.LOG.info(&quot;Salvando usuário no Banco...&quot;);</span>
+<span class="nc" id="L193">		this.userService.create(user);</span>
+<span class="nc" id="L194">		this.LOG.info(&quot;Usuário salvo com sucesso!&quot;);</span>
+
+<span class="nc" id="L196">		return ResponseEntity.status(HttpStatus.CREATED).build();</span>
+	}
+
+	public ResponseEntity&lt;HttpStatus&gt; delete(Integer id) {
+<span class="nc bnc" id="L200" title="All 2 branches missed.">		if (id == null) {</span>
+<span class="nc" id="L201">			throw new IllegalArgumentException(&quot;Erro ID vazio&quot;);</span>
+		}
+<span class="nc" id="L203">		this.citizenRepository.deleteById(id);</span>
+<span class="nc" id="L204">		this.LOG.info(&quot;Cidadão deletado com sucesso...&quot;);</span>
+<span class="nc" id="L205">		return ResponseEntity.accepted().build();</span>
+	}
+
+	public VillageReportDTO getReport() throws IllegalAccessException {
+<span class="nc" id="L209">		Double revenue = 0.0;</span>
+<span class="nc" id="L210">		Double expense = 0.0;</span>
+<span class="nc" id="L211">		Double mostExpenseCitizen = 0.0;</span>
+
+<span class="nc" id="L213">		List&lt;CitizenDTO&gt; citizens = this.listAll();</span>
+<span class="nc" id="L214">		VillageReportDTO villageReport = new VillageReportDTO();</span>
+<span class="nc bnc" id="L215" title="All 4 branches missed.">		if (citizens == null || citizens.isEmpty()) {</span>
+<span class="nc" id="L216">			throw new IllegalAccessException(&quot;O relatório está nulo!&quot;);</span>
+		}
+
+<span class="nc bnc" id="L219" title="All 2 branches missed.">		for (CitizenDTO citizen : citizens) {</span>
+
+<span class="nc bnc" id="L221" title="All 2 branches missed.">			if (citizen.getExpense() &gt; mostExpenseCitizen) {</span>
+<span class="nc" id="L222">				villageReport.setMostExpenseCitizen(citizen.getExpense()); // Cidadao que gasta mais</span>
+			}
+
+<span class="nc" id="L225">			revenue += citizen.getIncome();</span>
+<span class="nc" id="L226">			expense += citizen.getExpense();</span>
+<span class="nc" id="L227">			villageReport.setTotalRevenue(revenue); // Total de ganhos dos cidadãos</span>
+<span class="nc" id="L228">			villageReport.setDifferenceRevenueAndExpense(TotalRevenueVillage - expense); // Total de gastos dos Cidadãos</span>
+
+<span class="nc" id="L230">			villageReport.setBudget(TotalRevenueVillage); // Orçamento</span>
+
+<span class="nc" id="L232">		}</span>
+
+<span class="nc" id="L234">		villageReport.setBudget(TotalRevenueVillage);</span>
+
+<span class="nc" id="L236">		this.LOG.info(&quot;Relatório gerado com sucesso!&quot;);</span>
+<span class="nc" id="L237">		return villageReport;</span>
+
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

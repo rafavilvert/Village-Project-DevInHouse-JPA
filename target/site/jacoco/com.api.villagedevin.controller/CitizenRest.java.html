@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CitizenRest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">api.village-devin</a> &gt; <a href="index.source.html" class="el_package">com.api.villagedevin.controller</a> &gt; <span class="el_source">CitizenRest.java</span></div><h1>CitizenRest.java</h1><pre class="source lang-java linenums">package com.api.villagedevin.controller;
+
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.api.villagedevin.model.persistence.Citizen;
+import com.api.villagedevin.model.transport.CitizenDTO;
+import com.api.villagedevin.model.transport.CreateCitizenAndUserDTO;
+import com.api.villagedevin.model.transport.VillageReportDTO;
+import com.api.villagedevin.service.CitizenService;
+
+@RestController
+@RequestMapping(&quot;/citizens&quot;)
+public class CitizenRest {
+
+	private final CitizenService citizenService;
+
+<span class="fc" id="L28">	public CitizenRest(CitizenService citizenService) {</span>
+<span class="fc" id="L29">		this.citizenService = citizenService;</span>
+<span class="fc" id="L30">	}</span>
+
+	@GetMapping(&quot;/list-all&quot;)
+	public List&lt;CitizenDTO&gt; listAll() {
+<span class="nc" id="L34">		return citizenService.listAll();</span>
+	}
+
+	@GetMapping(&quot;/list-names&quot;)
+	public List&lt;String&gt; listNames() {
+<span class="nc" id="L39">		return citizenService.listCitizensNames();</span>
+	}
+
+	@GetMapping(&quot;/list-citizens/{id}&quot;)
+	public Citizen listCitizensDetails(@PathVariable(&quot;id&quot;) Integer id) {
+<span class="nc" id="L44">		return citizenService.listCitizens(id);</span>
+	}
+
+	@GetMapping(&quot;/{id}&quot;)
+	public CitizenDTO getById(@PathVariable(&quot;id&quot;) Integer id) {
+<span class="nc" id="L49">		return citizenService.getById(id);</span>
+	}
+
+	@GetMapping(&quot;/filter&quot;)
+	public List&lt;CitizenDTO&gt; getCitizensByFilter(@RequestParam(&quot;name&quot;) String name) {
+<span class="nc" id="L54">		return citizenService.getCitizensByName(name);</span>
+	}
+
+	@GetMapping(&quot;/filter-month&quot;)
+	public List&lt;CitizenDTO&gt; getCitizensByMonth(@RequestParam(&quot;month&quot;) Integer month) {
+<span class="nc" id="L59">		return citizenService.getCitizensByMonth(month);</span>
+	}
+
+	@GetMapping(&quot;/filter-age&quot;)
+	public List&lt;CitizenDTO&gt; getCitizensByAge(@RequestParam(&quot;age&quot;) Integer age) {
+<span class="nc" id="L64">		return citizenService.getCitizensByAge(age);</span>
+	}
+
+//	
+//	@PreAuthorize(&quot;hasAnyRole('ADMIN')&quot;)
+	@PostMapping(&quot;/create&quot;)
+	public ResponseEntity&lt;HttpStatus&gt; create(@RequestBody CreateCitizenAndUserDTO createCitizenAndUserDTO) throws IllegalAccessException {
+<span class="nc" id="L71">		return this.citizenService.create(createCitizenAndUserDTO);</span>
+	}
+
+//	
+	@DeleteMapping(&quot;/delete/{id}&quot;)
+	public ResponseEntity&lt;HttpStatus&gt; delete(@PathVariable Integer id) {
+<span class="nc" id="L77">	return this.citizenService.delete(id);</span>
+	}
+
+//	
+//	@PreAuthorize(&quot;hasAnyRole('ADMIN')&quot;)
+	@GetMapping(&quot;/village-report&quot;)
+	public VillageReportDTO getReport() throws IllegalAccessException {
+<span class="nc" id="L84">		return citizenService.getReport();</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

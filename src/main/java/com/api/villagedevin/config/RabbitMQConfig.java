@@ -22,7 +22,7 @@ public class RabbitMQConfig {
 	@Bean
 	public Queue getReportQueue() {
 		Map<String, Object> arguments = new HashMap<>();
-		arguments.put("x-message-ttl", 300);
+		arguments.put("x-message-ttl", 5000);
 		return new Queue("devin.report", true, false, false, arguments);
 	}
 
@@ -35,6 +35,25 @@ public class RabbitMQConfig {
 	public Binding getReportBindingReportQueueToReportExchange() {
 		Map<String, Object> arguments = new HashMap<>();
 		return new Binding("devin.report", Binding.DestinationType.QUEUE, "direct.report", "devin.report", arguments);
+	}
+
+	@Bean
+	public Queue getReportQueueDLX() {
+		Map<String, Object> arguments = new HashMap<>();
+
+		return new Queue("devin.report.dlx", true, false, false, arguments);
+	}
+
+	@Bean
+	public DirectExchange getReportExchangeDLX() {
+		return new DirectExchange("direct.report.dlx", true, false);
+	}
+
+	@Bean
+	public Binding getReportBindingReportQueueToReportExchangeDLX() {
+		Map<String, Object> arguments = new HashMap<>();
+		return new Binding("devin.report.dlx", Binding.DestinationType.QUEUE, "direct.report.dlx", "devin.report.dlx",
+				arguments);
 	}
 
 }

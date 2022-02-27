@@ -67,7 +67,7 @@ public class CitizenRest {
 //	
 //	@PreAuthorize("hasAnyRole('ADMIN')")
 	@PostMapping("/create")
-	public ResponseEntity<HttpStatus> create(@RequestBody CreateCitizenAndUserDTO createCitizenAndUserDTO) {
+	public ResponseEntity<HttpStatus> create(@RequestBody CreateCitizenAndUserDTO createCitizenAndUserDTO) throws IllegalAccessException {
 		return this.citizenService.create(createCitizenAndUserDTO);
 	}
 

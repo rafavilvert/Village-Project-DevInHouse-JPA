@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SecurityConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">api.village-devin</a> &gt; <a href="index.source.html" class="el_package">com.api.villagedevin.config</a> &gt; <span class="el_source">SecurityConfig.java</span></div><h1>SecurityConfig.java</h1><pre class="source lang-java linenums">package com.api.villagedevin.config;
+
+import java.util.Arrays;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import com.api.villagedevin.filters.JWTAuthenticationFilter;
+import com.api.villagedevin.filters.JWTAuthorizationFilter;
+import com.api.villagedevin.service.UserService;
+import com.api.villagedevin.utils.JWTUtil;
+
+@Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+<span class="fc" id="L32">	private static final String[] PUBLIC_MATCHERS_POST = { &quot;/login/**&quot; };</span>
+
+	private UserService userService;
+
+	private JWTUtil jwtUtil;
+
+<span class="fc" id="L38">	public SecurityConfig(@Lazy UserService userService, JWTUtil jwtUtil) {</span>
+<span class="fc" id="L39">		this.userService = userService;</span>
+<span class="fc" id="L40">		this.jwtUtil = jwtUtil;</span>
+<span class="fc" id="L41">	}</span>
+
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+<span class="fc" id="L45">		auth.userDetailsService(userService).passwordEncoder(getPasswordEncoder());</span>
+<span class="fc" id="L46">	}</span>
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+
+<span class="fc" id="L51">		http.cors().and().csrf().disable();</span>
+<span class="fc" id="L52">		http.authorizeRequests().antMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll().anyRequest()</span>
+<span class="fc" id="L53">				.authenticated();</span>
+
+<span class="fc" id="L55">		http.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtUtil));</span>
+<span class="fc" id="L56">		http.addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtUtil, userService));</span>
+<span class="fc" id="L57">		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);</span>
+<span class="fc" id="L58">	}</span>
+
+	@Bean
+	CorsConfigurationSource corsConfigurationSource() {
+<span class="fc" id="L62">		CorsConfiguration configuration = new CorsConfiguration().applyPermitDefaultValues();</span>
+<span class="fc" id="L63">		configuration.setAllowedMethods(Arrays.asList(&quot;POST&quot;, &quot;GET&quot;, &quot;PUT&quot;, &quot;DELETE&quot;, &quot;OPTIONS&quot;));</span>
+<span class="fc" id="L64">		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();</span>
+<span class="fc" id="L65">		source.registerCorsConfiguration(&quot;/**&quot;, configuration);</span>
+<span class="fc" id="L66">		return source;</span>
+	}
+
+	@Override
+	public void configure(WebSecurity web) throws Exception {
+<span class="fc" id="L71">		super.configure(web);</span>
+<span class="fc" id="L72">	}</span>
+
+	@Bean
+	public PasswordEncoder getPasswordEncoder() {
+<span class="fc" id="L76">		return new BCryptPasswordEncoder();</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

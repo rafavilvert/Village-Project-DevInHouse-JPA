@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">api.village-devin</a> &gt; <a href="index.source.html" class="el_package">com.api.villagedevin.service</a> &gt; <span class="el_source">UserService.java</span></div><h1>UserService.java</h1><pre class="source lang-java linenums">package com.api.villagedevin.service;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.api.villagedevin.model.persistence.User;
+import com.api.villagedevin.model.persistence.UserSpringSecurity;
+import com.api.villagedevin.model.repository.UserRepository;
+import com.api.villagedevin.model.transport.UserDTO;
+import com.api.villagedevin.utils.ValidationUtil;
+
+@Service
+public class UserService implements UserDetailsService {
+
+<span class="fc" id="L30">	private final Logger LOG = LogManager.getLogger(UserService.class);</span>
+
+	private final UserRepository userRepository;
+	private PasswordEncoder passwordEncoder;
+
+<span class="fc" id="L35">	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {</span>
+<span class="fc" id="L36">		this.userRepository = userRepository;</span>
+<span class="fc" id="L37">		this.passwordEncoder = passwordEncoder;</span>
+<span class="fc" id="L38">	}</span>
+
+	public List&lt;UserDTO&gt; listAll() {
+<span class="fc" id="L41">		List&lt;UserDTO&gt; users = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L42">		this.LOG.info(&quot;Buscando Usuários no Banco...&quot;);</span>
+<span class="fc" id="L43">		Iterable&lt;User&gt; iterable = this.userRepository.findAll();</span>
+<span class="pc" id="L44">		iterable.forEach(all -&gt; users.add(new UserDTO(all)));</span>
+
+<span class="pc bpc" id="L46" title="2 of 4 branches missed.">		if (users == null || users.isEmpty()) {</span>
+<span class="fc" id="L47">			this.LOG.info(&quot;Nenhum Usuário encontrado.&quot;);</span>
+<span class="fc" id="L48">			return users;</span>
+		} else {
+<span class="nc" id="L50">			this.LOG.info(&quot;Usuários encontrados com sucesso!&quot;);</span>
+<span class="nc" id="L51">			return users;</span>
+		}
+
+	}
+
+	public List&lt;UserDTO&gt; getUsersByEmail(String email) {
+<span class="fc" id="L57">		List&lt;UserDTO&gt; userDTO = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L58">		this.LOG.info(&quot;Buscando Usuários no Banco por email&quot;);</span>
+<span class="fc" id="L59">		Iterable&lt;User&gt; iterable = this.userRepository.findByEmailContaining(email);</span>
+
+<span class="fc" id="L61">		iterable.forEach(user -&gt; userDTO.add(new UserDTO(user)));</span>
+
+<span class="pc bpc" id="L63" title="1 of 4 branches missed.">		if (userDTO == null || userDTO.isEmpty()) {</span>
+<span class="fc" id="L64">			this.LOG.info(&quot;Nenhum Usuário encontrado.&quot;);</span>
+<span class="fc" id="L65">			return userDTO;</span>
+		} else {
+<span class="fc" id="L67">			this.LOG.info(&quot;Usuário encontrado com sucesso!&quot;);</span>
+<span class="fc" id="L68">			return userDTO;</span>
+		}
+
+	}
+
+	@Transactional(value = TxType.REQUIRED)
+	public void update(User user) {
+<span class="nc" id="L75">		this.LOG.info(&quot;Atualizando usuário...&quot;);</span>
+<span class="nc" id="L76">		userRepository.save(user);</span>
+<span class="nc" id="L77">		this.LOG.info(&quot;Usuário atualizado.&quot;);</span>
+<span class="nc" id="L78">	}</span>
+
+	public User create(User user) throws IllegalArgumentException {
+<span class="fc bfc" id="L81" title="All 2 branches covered.">		if (user == null) {</span>
+<span class="fc" id="L82">			throw new IllegalArgumentException(&quot;Usuário Nulo&quot;);</span>
+		}
+
+<span class="fc bfc" id="L85" title="All 2 branches covered.">		if (!ValidationUtil.isValidUsername(user.getEmail())) {</span>
+<span class="fc" id="L86">			this.LOG.info(&quot;Email inválido.&quot;);</span>
+<span class="fc" id="L87">			throw new IllegalArgumentException(&quot;Email inválido&quot;);</span>
+		}
+
+<span class="fc bfc" id="L90" title="All 2 branches covered.">		if (!ValidationUtil.isValidPassword(user.getPassword())) {</span>
+<span class="fc" id="L91">			this.LOG.info(&quot;enha inválida.&quot;);</span>
+<span class="fc" id="L92">			throw new IllegalArgumentException(&quot;Senha inválida&quot;);</span>
+		}
+
+<span class="fc" id="L95">		String passwordEnconde = passwordEncoder.encode(user.getPassword());</span>
+<span class="fc" id="L96">		user.setPassword(passwordEnconde);</span>
+<span class="fc" id="L97">		this.LOG.info(&quot;Salvando usuário no Banco...&quot;);</span>
+
+<span class="fc" id="L99">		this.userRepository.save(user);</span>
+<span class="fc" id="L100">		this.LOG.info(&quot;Usuário salvo com sucesso!&quot;);</span>
+<span class="fc" id="L101">		return user;</span>
+
+	}
+
+	public User getUserById(Integer id) {
+<span class="nc" id="L106">		User user = userRepository.findUserById(id);</span>
+<span class="nc" id="L107">		this.LOG.info(&quot;Buscando Usuário no Banco por Id...&quot;);</span>
+<span class="nc" id="L108">		List&lt;String&gt; roles = userRepository.fingRolesByUserId(id);</span>
+<span class="nc" id="L109">		user.setRoles(roles);</span>
+<span class="nc" id="L110">		return userRepository.findUserById(id);</span>
+	}
+
+	public static UserSpringSecurity authenticated() {
+		try {
+<span class="nc" id="L115">			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span>
+<span class="nc" id="L116">			return new UserSpringSecurity((String) authentication.getPrincipal(), null, new ArrayList&lt;&gt;());</span>
+<span class="nc" id="L117">		} catch (Exception e) {</span>
+<span class="nc" id="L118">			return null;</span>
+		}
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		try {
+<span class="nc" id="L125">			User user = getUser(username);</span>
+<span class="nc" id="L126">			Set&lt;String&gt; roles = new HashSet&lt;String&gt;();</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">			for (String listRoles : user.getRoles()) {</span>
+<span class="nc" id="L128">				roles.add(listRoles);</span>
+<span class="nc" id="L129">			}</span>
+<span class="nc" id="L130">			return new UserSpringSecurity(user.getEmail(), user.getPassword(), roles);</span>
+<span class="nc" id="L131">		} catch (UsernameNotFoundException e) {</span>
+
+<span class="nc" id="L133">			throw new UsernameNotFoundException(username);</span>
+		}
+
+	}
+
+	public User getUser(String email) {
+<span class="nc" id="L139">		return userRepository.findUserByEmail(email);</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

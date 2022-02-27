@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JWTUtil.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">api.village-devin</a> &gt; <a href="index.source.html" class="el_package">com.api.villagedevin.utils</a> &gt; <span class="el_source">JWTUtil.java</span></div><h1>JWTUtil.java</h1><pre class="source lang-java linenums">package com.api.villagedevin.utils;
+
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+
+@Component
+public class JWTUtil {
+
+	private String secret;
+	private Long expiration;
+
+<span class="fc" id="L19">	public JWTUtil(@Value(&quot;${jwt.secret}&quot;) String secret, @Value(&quot;${jwt.expiration}&quot;) Long expiration) {</span>
+<span class="fc" id="L20">		this.secret = secret;</span>
+<span class="fc" id="L21">		this.expiration = expiration;</span>
+<span class="fc" id="L22">	}</span>
+
+	public String generateToken(String email) {
+<span class="nc" id="L25">		return Jwts.builder().setSubject(email).setExpiration(new Date(System.currentTimeMillis() + expiration))</span>
+<span class="nc" id="L26">				.signWith(SignatureAlgorithm.HS512, secret).compact();</span>
+	}
+
+	public boolean validToken(String token) {
+<span class="nc" id="L30">		Claims claims = getClaims(token);</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">		if (claims != null) {</span>
+<span class="nc" id="L32">			String email = claims.getSubject();</span>
+<span class="nc" id="L33">			Date expiration = claims.getExpiration();</span>
+<span class="nc" id="L34">			Date now = new Date(System.currentTimeMillis());</span>
+<span class="nc bnc" id="L35" title="All 6 branches missed.">			return email != null &amp;&amp; expiration != null &amp;&amp; now.before(expiration);</span>
+		}
+<span class="nc" id="L37">		return false;</span>
+	}
+
+	private Claims getClaims(String token) {
+		try {
+<span class="nc" id="L42">			Jws&lt;Claims&gt; parseClaimsJws = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);</span>
+<span class="nc" id="L43">			return parseClaimsJws.getBody();</span>
+<span class="nc" id="L44">		} catch (Exception e) {</span>
+<span class="nc" id="L45">			return null;</span>
+		}
+	}
+
+	public String getEmailByToken(String token) {
+<span class="nc" id="L50">		Claims claims = getClaims(token);</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">		if (claims != null) {</span>
+<span class="nc" id="L52">			return claims.getSubject();</span>
+		}
+<span class="nc" id="L54">		return null;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

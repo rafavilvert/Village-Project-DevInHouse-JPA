@@ -12,10 +12,10 @@ import com.api.villagedevin.model.persistence.User;
 @Repository
 public interface UserRepository extends CrudRepository<User, Integer> {
 
-	@Query(value = "SELECT * FROM \"user\" WHERE email LIKE %:email%", nativeQuery = true)
-	public Iterable<User> findByEmail(String email);
+//	@Query(value = "SELECT * FROM \"user\" WHERE email LIKE %:email%", nativeQuery = true)
+	public Iterable<User> findByEmailContaining(String email);
 
-	@Query(value = "SELECT * FROM \"user\" WHERE id = ?", nativeQuery = true)
+	@Query(value = "SELECT u FROM User u WHERE u.id = :id")
 	public User findUserById(Integer id);
 
 	@Query(value = "SELECT roles FROM user_roles WHERE user_id = ?", nativeQuery = true)

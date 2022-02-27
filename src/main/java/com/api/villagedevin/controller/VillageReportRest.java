@@ -8,7 +8,7 @@ import com.api.villagedevin.model.transport.VillageReportDTO;
 import com.api.villagedevin.service.VillageReportPDFService;
 
 @RestController
-@RequestMapping("pdf")
+@RequestMapping("/pdf")
 public class VillageReportRest {
 
 	private VillageReportPDFService pdfService;

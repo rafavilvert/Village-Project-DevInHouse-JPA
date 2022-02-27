@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>VillageReportPDFService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">api.village-devin</a> &gt; <a href="index.source.html" class="el_package">com.api.villagedevin.service</a> &gt; <span class="el_source">VillageReportPDFService.java</span></div><h1>VillageReportPDFService.java</h1><pre class="source lang-java linenums">package com.api.villagedevin.service;
+
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.stereotype.Service;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.api.villagedevin.model.transport.AMQPMessageWrapper;
+import com.api.villagedevin.model.transport.VillageReportDTO;
+
+@Service
+public class VillageReportPDFService {
+
+<span class="fc" id="L15">	private final Logger LOG = LogManager.getLogger(VillageReportPDFService.class);</span>
+
+	private CitizenService citizenService;
+
+	private RabbitTemplate rabbitTemplate;
+
+<span class="fc" id="L21">	public VillageReportPDFService(RabbitTemplate rabbitTemplate, CitizenService citizenService) {</span>
+<span class="fc" id="L22">		this.rabbitTemplate = rabbitTemplate;</span>
+<span class="fc" id="L23">		this.citizenService = citizenService;</span>
+<span class="fc" id="L24">	}</span>
+
+	private void send(AMQPMessageWrapper amqpMessageWrapper, String routingKey) {
+<span class="nc" id="L27">		rabbitTemplate.convertAndSend(routingKey, amqpMessageWrapper);</span>
+<span class="nc" id="L28">	}</span>
+	
+	public void sendToQueue(AMQPMessageWrapper amqpMessageWrapper) {
+<span class="nc" id="L31">		this.send(amqpMessageWrapper, &quot;devin.report&quot;);;</span>
+<span class="nc" id="L32">	}</span>
+
+	public void sendToDLX(AMQPMessageWrapper amqpMessageWrapper) {
+<span class="nc" id="L35">		this.send(amqpMessageWrapper, &quot;devin.report.dlx&quot;);</span>
+
+<span class="nc" id="L37">	}</span>
+
+	public VillageReportDTO create() throws Exception {
+<span class="nc" id="L40">		this.LOG.info(&quot;Gerando relatório da vila...&quot;);</span>
+		try {
+<span class="nc" id="L42">			VillageReportDTO report = citizenService.getReport();</span>
+<span class="nc" id="L43">			this.LOG.info(&quot;Relatório da vila gerado com sucesso!&quot;);</span>
+<span class="nc" id="L44">			AMQPMessageWrapper villageReport = new AMQPMessageWrapper(report);</span>
+<span class="nc" id="L45">			String email = UserService.authenticated().getUsername();</span>
+<span class="nc" id="L46">			villageReport.setEmail(email);</span>
+<span class="nc" id="L47">			this.sendToQueue(villageReport);</span>
+<span class="nc" id="L48">			return report;</span>
+<span class="nc" id="L49">		} catch (Exception e) {</span>
+<span class="nc" id="L50">			this.LOG.info(&quot;Erro ao gerar relatório&quot;);</span>
+<span class="nc" id="L51">			System.out.println(e);</span>
+<span class="nc" id="L52">			e.printStackTrace();</span>
+<span class="nc" id="L53">			throw e;</span>
+		}
+
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

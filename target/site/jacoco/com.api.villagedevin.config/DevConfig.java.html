@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DevConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">api.village-devin</a> &gt; <a href="index.source.html" class="el_package">com.api.villagedevin.config</a> &gt; <span class="el_source">DevConfig.java</span></div><h1>DevConfig.java</h1><pre class="source lang-java linenums">package com.api.villagedevin.config;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.mail.MailSender;
+
+import com.api.villagedevin.service.EmailService;
+import com.api.villagedevin.service.SmtpEmailService;
+
+@Configuration
+@Profile(&quot;dev&quot;)
+public class DevConfig {
+
+	private String sender;
+
+	private MailSender mailSender;
+
+<span class="fc" id="L20">	public DevConfig(@Value(&quot;${default.sender}&quot;) String sender, MailSender mailSender) {</span>
+<span class="fc" id="L21">		this.sender = sender;</span>
+<span class="fc" id="L22">		this.mailSender = mailSender;</span>
+<span class="fc" id="L23">	}</span>
+
+	@Bean
+	public EmailService emailService() {
+<span class="fc" id="L27">		return new SmtpEmailService(sender, mailSender);</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
