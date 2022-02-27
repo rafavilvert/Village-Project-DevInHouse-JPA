@@ -1,7 +1,14 @@
 package com.api.villagedevin.model.transport;
 
-public class VillageReportDTO {
+import java.io.Serializable;
 
+public class VillageReportDTO implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private Double budget;
 	private Double totalRevenue;
 	private Double differenceRevenueAndExpense;

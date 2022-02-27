@@ -2,6 +2,8 @@ package com.api.villagedevin.service;
 
 import java.util.Random;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +11,8 @@ import com.api.villagedevin.model.persistence.User;
 
 @Service
 public class AuthService {
+
+	private final Logger LOG = LogManager.getLogger(AuthService.class);
 
 	private EmailService emailService;
 	private PasswordEncoder passwordEncoder;
@@ -21,19 +25,18 @@ public class AuthService {
 	}
 
 	public void sendNewPass(String email) {
-		System.out.println(email);
+		this.LOG.info("Enviando e-mail");
 		try {
 			User user = userService.getUser(email);
 			System.out.println(user.getEmail());
 			System.out.println(user.getPassword());
 			String newPass = generatePassword();
 			String encodePass = passwordEncoder.encode(newPass);
-			System.out.println(encodePass);
 			user.setPassword(encodePass);
 			userService.update(user);
 			emailService.sendNewPassword(user, newPass);
 		} catch (RuntimeException e) {
-
+			this.LOG.info("email não enviado " + e);
 			throw new RuntimeException("Email not found.", e);
 		}
 

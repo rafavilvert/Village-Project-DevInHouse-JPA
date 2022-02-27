@@ -8,6 +8,8 @@ import java.util.Set;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -26,6 +28,8 @@ import com.api.villagedevin.model.transport.UserDTO;
 @Service
 public class UserService implements UserDetailsService {
 
+	private final Logger LOG = LogManager.getLogger(UserService.class);
+
 	private final UserRepository userRepository;
 	private PasswordEncoder passwordEncoder;
 
@@ -36,19 +40,35 @@ public class UserService implements UserDetailsService {
 
 	public List<UserDTO> listAll() {
 		List<UserDTO> users = new ArrayList<>();
+		this.LOG.info("Buscando Usuários no Banco...");
 		Iterable<User> iterable = this.userRepository.findAll();
 		iterable.forEach(all -> users.add(new UserDTO(all)));
-		System.out.println(users);
-		return users;
+
+		if (users == null || users.isEmpty()) {
+			this.LOG.info("Nenhum Usuário encontrado.");
+			return users;
+		} else {
+			this.LOG.info("Usuários encontrados com sucesso!");
+			return users;
+		}
+
 	}
 
 	public List<UserDTO> getUsersByEmail(String email) {
 		List<UserDTO> userDTO = new ArrayList<>();
+		this.LOG.info("Buscando Usuários no Banco por email");
 		Iterable<User> iterable = this.userRepository.findByEmail(email);
 
 		iterable.forEach(user -> userDTO.add(new UserDTO(user)));
 
-		return userDTO;
+		if (userDTO == null || userDTO.isEmpty()) {
+			this.LOG.info("Nenhum Usuário encontrado.");
+			return userDTO;
+		} else {
+			this.LOG.info("Usuário encontrado com sucesso!");
+			return userDTO;
+		}
+
 	}
 
 //	public ResponseEntity<HttpStatus> createroles(List<String> roles) {
@@ -59,27 +79,34 @@ public class UserService implements UserDetailsService {
 //
 //		return ResponseEntity.status(HttpStatus.CREATED).build();
 //	}
-	
+
 	@Transactional(value = TxType.REQUIRED)
 	public void update(User user) {
+		this.LOG.info("Atualizando usuário...");
 		userRepository.save(user);
+		this.LOG.info("Usuário atualizado.");
 	}
 
 	public ResponseEntity<HttpStatus> create(User user) {
 		String passwordEnconde = passwordEncoder.encode(user.getPassword());
 		user.setPassword(passwordEnconde);
+		this.LOG.info("Salvando usuário no Banco...");
 
-		this.userRepository.save(user);
+		if (user == null) {
+			this.LOG.info("Problemas para salva usuário.");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		} else {
+			this.userRepository.save(user);
+			return ResponseEntity.status(HttpStatus.CREATED).build();
+		}
 
-		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
 	public User getUserById(Integer id) {
 		User user = userRepository.findUserById(id);
+		this.LOG.info("Buscando Usuário no Banco por Id...");
 		List<String> roles = userRepository.fingRolesByUserId(id);
 		user.setRoles(roles);
-		System.out.println(user.getRoles());
-		System.out.println(user.getCitizen());
 		return userRepository.findUserById(id);
 	}
 
