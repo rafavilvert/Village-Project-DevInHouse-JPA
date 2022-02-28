@@ -153,23 +153,23 @@ public class CitizenService {
 		return citizensDTO;
 	}
 
-	public ResponseEntity<HttpStatus> create(CreateCitizenAndUserDTO createCitizenAndUserDTO)
-			throws IllegalAccessException {
+	public Citizen create(CreateCitizenAndUserDTO createCitizenAndUserDTO)
+			throws IllegalArgumentException {
 
 		if (createCitizenAndUserDTO == null) {
-			throw new IllegalAccessException("O cidadão está nulo!");
+			throw new IllegalArgumentException("O cidadão está nulo!");
 		}
 
 		if (!ValidationUtil.isValidName(createCitizenAndUserDTO.getName())) {
-			throw new IllegalAccessException("Nome inválido");
+			throw new IllegalArgumentException("Nome inválido");
 		}
 
 		if (!ValidationUtil.isValidName(createCitizenAndUserDTO.getLastname())) {
-			throw new IllegalAccessException("Sobrenome inválido");
+			throw new IllegalArgumentException("Sobrenome inválido");
 		}
 
 		if (!ValidationUtil.isValidCPF(createCitizenAndUserDTO.getCpf())) {
-			throw new IllegalAccessException("CPF inválido");
+			throw new IllegalArgumentException("CPF inválido");
 		}
 
 		Citizen citizen = new Citizen();
@@ -194,7 +194,7 @@ public class CitizenService {
 		this.userService.create(user);
 		this.LOG.info("Usuário salvo com sucesso!");
 
-		return ResponseEntity.status(HttpStatus.CREATED).build();
+		return citizen;
 	}
 
 	public ResponseEntity<HttpStatus> delete(Integer id) {

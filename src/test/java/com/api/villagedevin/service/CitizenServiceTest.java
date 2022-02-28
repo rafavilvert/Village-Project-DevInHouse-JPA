@@ -14,8 +14,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.api.villagedevin.model.persistence.Citizen;
+import com.api.villagedevin.model.persistence.User;
 import com.api.villagedevin.model.repository.CitizenRepository;
 import com.api.villagedevin.model.transport.CitizenDTO;
+import com.api.villagedevin.model.transport.CreateCitizenAndUserDTO;
 
 public class CitizenServiceTest {
 
@@ -61,8 +63,9 @@ public class CitizenServiceTest {
 	void listCitizensNamesNull() {
 		List<String> citizensName = new ArrayList<>();
 		when(citizenRepository.listCitizensName()).thenReturn(citizensName);
-		
-		Exception exceptionCitizenrNull = assertThrowsExactly(Exception.class, () -> citizenService.listCitizensNames());
+
+		Exception exceptionCitizenrNull = assertThrowsExactly(Exception.class,
+				() -> citizenService.listCitizensNames());
 		assertEquals("Cidadão está nulo.", exceptionCitizenrNull.getMessage());
 	}
 
@@ -70,10 +73,10 @@ public class CitizenServiceTest {
 	void listCitizensNames() throws Exception {
 		List<String> citizensName = new ArrayList<>();
 		citizensName.add("Vilvert");
-		
+
 		when(citizenRepository.listCitizensName()).thenReturn(citizensName);
 		List<String> listCitizensNames = citizenService.listCitizensNames();
-		
+
 		assertTrue(!listCitizensNames.isEmpty());
 	}
 
@@ -104,8 +107,7 @@ public class CitizenServiceTest {
 
 	@Test
 	void getCitizensByName() throws Exception {
-		
-		
+
 		List<Citizen> citizens2 = new ArrayList<>();
 		citizens2.add(new Citizen());
 
@@ -125,7 +127,7 @@ public class CitizenServiceTest {
 
 	@Test
 	void getCitizensByMonth() throws Exception {
-		
+
 		List<Citizen> citizens = new ArrayList<>();
 		citizens.add(new Citizen());
 
@@ -145,7 +147,7 @@ public class CitizenServiceTest {
 
 	@Test
 	void getCitizensByAge() throws Exception {
-		
+
 		List<Citizen> citizens = new ArrayList<>();
 		citizens.add(new Citizen());
 
@@ -157,7 +159,54 @@ public class CitizenServiceTest {
 	}
 
 	@Test
-	void createCitizenNull() {
+	void createCitizenExpecteErrors() {
+		Citizen citizen = new Citizen();
+		CreateCitizenAndUserDTO createCitizenAndUserDTO = new CreateCitizenAndUserDTO();
+		IllegalArgumentException exceptionUserNull = assertThrowsExactly(IllegalArgumentException.class,
+				() -> citizenService.create(null));
+		assertEquals("O cidadão está nulo!", exceptionUserNull.getMessage());
+
+		IllegalArgumentException exceptionEmail = assertThrowsExactly(IllegalArgumentException.class,
+				() -> citizenService.create(createCitizenAndUserDTO));
+		assertEquals("Nome inválido", exceptionEmail.getMessage());
+
+		createCitizenAndUserDTO.setName("");
+		IllegalArgumentException exceptionEmailEmpyt = assertThrowsExactly(IllegalArgumentException.class,
+				() -> citizenService.create(createCitizenAndUserDTO));
+		assertEquals("Nome inválido", exceptionEmailEmpyt.getMessage());
+
+		createCitizenAndUserDTO.setName(" ");
+		IllegalArgumentException exceptionEmailEmpyt1 = assertThrowsExactly(IllegalArgumentException.class,
+				() -> citizenService.create(createCitizenAndUserDTO));
+		assertEquals("Nome inválido", exceptionEmailEmpyt1.getMessage());
+
+		createCitizenAndUserDTO.setName("5");
+		IllegalArgumentException exceptionEmailEmpyt2 = assertThrowsExactly(IllegalArgumentException.class,
+				() -> citizenService.create(createCitizenAndUserDTO));
+		assertEquals("Nome inválido", exceptionEmailEmpyt2.getMessage());
+
+		createCitizenAndUserDTO.setName("Vilvert");
+
+		IllegalArgumentException exceptionlastname = assertThrowsExactly(IllegalArgumentException.class,
+				() -> citizenService.create(createCitizenAndUserDTO));
+		assertEquals("Sobrenome inválido", exceptionlastname.getMessage());
+
+		createCitizenAndUserDTO.setLastname("");
+		IllegalArgumentException exceptionlastname1 = assertThrowsExactly(IllegalArgumentException.class,
+				() -> citizenService.create(createCitizenAndUserDTO));
+		assertEquals("Sobrenome inválido", exceptionlastname1.getMessage());
+
+		createCitizenAndUserDTO.setLastname(" ");
+		IllegalArgumentException exceptionlastname2 = assertThrowsExactly(IllegalArgumentException.class,
+				() -> citizenService.create(createCitizenAndUserDTO));
+		assertEquals("Sobrenome inválido", exceptionlastname2.getMessage());
+
+		createCitizenAndUserDTO.setLastname("5");
+		IllegalArgumentException exceptionlastname3 = assertThrowsExactly(IllegalArgumentException.class,
+				() -> citizenService.create(createCitizenAndUserDTO));
+		assertEquals("Sobrenome inválido", exceptionlastname3.getMessage());
+
+		createCitizenAndUserDTO.setLastname("Vilvert");
 
 	}
 

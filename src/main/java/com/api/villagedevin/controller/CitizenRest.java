@@ -67,14 +67,17 @@ public class CitizenRest {
 //	
 //	@PreAuthorize("hasAnyRole('ADMIN')")
 	@PostMapping("/create")
-	public ResponseEntity<HttpStatus> create(@RequestBody CreateCitizenAndUserDTO createCitizenAndUserDTO) throws IllegalAccessException {
-		return this.citizenService.create(createCitizenAndUserDTO);
+	public ResponseEntity<Citizen> create(@RequestBody CreateCitizenAndUserDTO createCitizenAndUserDTO)
+			throws IllegalAccessException {
+		Citizen citizen = this.citizenService.create(createCitizenAndUserDTO);
+		return ResponseEntity.status(HttpStatus.CREATED).body(citizen);
+
 	}
 
 //	
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<HttpStatus> delete(@PathVariable Integer id) {
-	return this.citizenService.delete(id);
+		return this.citizenService.delete(id);
 	}
 
 //	
