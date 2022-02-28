@@ -41,14 +41,14 @@ public class UserService implements UserDetailsService {
 <span class="fc" id="L41">		List&lt;UserDTO&gt; users = new ArrayList&lt;&gt;();</span>
 <span class="fc" id="L42">		this.LOG.info(&quot;Buscando Usuários no Banco...&quot;);</span>
 <span class="fc" id="L43">		Iterable&lt;User&gt; iterable = this.userRepository.findAll();</span>
-<span class="pc" id="L44">		iterable.forEach(all -&gt; users.add(new UserDTO(all)));</span>
+<span class="fc" id="L44">		iterable.forEach(all -&gt; users.add(new UserDTO(all)));</span>
 
-<span class="pc bpc" id="L46" title="2 of 4 branches missed.">		if (users == null || users.isEmpty()) {</span>
+<span class="pc bpc" id="L46" title="1 of 4 branches missed.">		if (users == null || users.isEmpty()) {</span>
 <span class="fc" id="L47">			this.LOG.info(&quot;Nenhum Usuário encontrado.&quot;);</span>
 <span class="fc" id="L48">			return users;</span>
 		} else {
-<span class="nc" id="L50">			this.LOG.info(&quot;Usuários encontrados com sucesso!&quot;);</span>
-<span class="nc" id="L51">			return users;</span>
+<span class="fc" id="L50">			this.LOG.info(&quot;Usuários encontrados com sucesso!&quot;);</span>
+<span class="fc" id="L51">			return users;</span>
 		}
 
 	}

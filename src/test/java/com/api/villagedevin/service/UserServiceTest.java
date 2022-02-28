@@ -73,63 +73,70 @@ public class UserServiceTest {
 	@Test
 	void listAllUsersNotFound() {
 
-		List<UserDTO> userListDTO = new ArrayList<UserDTO>();
+		List<User> userList = new ArrayList<User>();
 
-		when(userService.listAll()).thenReturn(userListDTO);
-		assertTrue(userListDTO.isEmpty());
+		when(userRepository.findAll()).thenReturn(userList);
+		
+		List<UserDTO> listAll = userService.listAll();
+		assertTrue(listAll.isEmpty());
 
 	}
 
 	@Test
 	void listAllUsers() {
 
-		List<UserDTO> userListDTO = new ArrayList<UserDTO>();
-		UserDTO userDTO = new UserDTO("rafavilvert@gmail.com");
-		userListDTO.add(userDTO);
+		List<User> userList = new ArrayList<User>();
 
-		when(userService.listAll()).thenReturn(userListDTO);
-
-		assertNotNull(userListDTO);
+		User user = new User();
+		userList.add(user);
+		
+		when(userRepository.findAll()).thenReturn(userList);
+		List<UserDTO> listAll = userService.listAll();
+		assertTrue(!listAll.isEmpty());
 
 	}
 
 	@Test
 	void createUserExpecteErrors() {
 		User user = new User();
-		IllegalArgumentException exceptionUserNull = assertThrowsExactly(IllegalArgumentException.class, () -> userService.create(null));
+		IllegalArgumentException exceptionUserNull = assertThrowsExactly(IllegalArgumentException.class,
+				() -> userService.create(null));
 		assertEquals("Usuário Nulo", exceptionUserNull.getMessage());
-		
-		IllegalArgumentException exceptionEmail = assertThrowsExactly(IllegalArgumentException.class, () -> userService.create(user));
+
+		IllegalArgumentException exceptionEmail = assertThrowsExactly(IllegalArgumentException.class,
+				() -> userService.create(user));
 		assertEquals("Email está nulo!", exceptionEmail.getMessage());
-		
+
 		user.setEmail("");
-		IllegalArgumentException exceptionEmailEmpyt = assertThrowsExactly(IllegalArgumentException.class, () -> userService.create(user));
+		IllegalArgumentException exceptionEmailEmpyt = assertThrowsExactly(IllegalArgumentException.class,
+				() -> userService.create(user));
 		assertEquals("Email inválido", exceptionEmailEmpyt.getMessage());
 
 		user.setEmail("rafa@teste.com");
-		IllegalArgumentException exceptionPassqordNull = assertThrowsExactly(IllegalArgumentException.class, () -> userService.create(user));
+		IllegalArgumentException exceptionPassqordNull = assertThrowsExactly(IllegalArgumentException.class,
+				() -> userService.create(user));
 		assertEquals("Password está nulo!", exceptionPassqordNull.getMessage());
 		user.setPassword("1234");
-		IllegalArgumentException exceptionPasswordInvalid = assertThrowsExactly(IllegalArgumentException.class, () -> userService.create(user));
+		IllegalArgumentException exceptionPasswordInvalid = assertThrowsExactly(IllegalArgumentException.class,
+				() -> userService.create(user));
 
 		assertEquals("Senha inválida", exceptionPasswordInvalid.getMessage());
 
 	}
-	
+
 	@Test
 	void createUserSuccesses() {
 		User user = new User();
-		
+
 		user.setEmail("rafa@teste.com");
 		user.setPassword("Spring@1");
 		user.setRoles(List.of("USER"));
 		when(passwordEncoder.encode(user.getPassword())).thenReturn("Simulating");
 		User user2 = userService.create(user);
 		verify(userRepository, atLeastOnce()).save(user);
-		
+
 		assertNotNull(user2);
 		assertEquals("Simulating", user2.getPassword());
-		
 
 	}
 
