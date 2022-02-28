@@ -51,7 +51,7 @@ public class CitizenService {
 
 	}
 
-	public List<String> listCitizensNames() {
+	public List<String> listCitizensNames() throws Exception {
 		List<String> citizensName = new ArrayList<>();
 		this.LOG.info("Buscando nomes no Banco.");
 		List<String> listCitizensName = this.citizenRepository.listCitizensName();
@@ -59,43 +59,44 @@ public class CitizenService {
 
 		if (citizensName == null || citizensName.isEmpty()) {
 			this.LOG.info("Nenhum nome encontrado.");
-			return citizensName;
-		} else {
-			this.LOG.info("Nomes encontrados com sucesso!");
-			return citizensName;
+			throw new Exception("Cidadão está nulo.");
 		}
+
+		this.LOG.info("Nomes encontrados com sucesso!");
+		return citizensName;
 
 	}
 
-	public Citizen listCitizens(Integer id) {
+	public Citizen listCitizens(Integer id) throws Exception {
 		this.LOG.info("Buscando cidadão no Banco...");
 
 		Citizen citizen = this.citizenRepository.findAllById(id);
 
 		if (citizen == null) {
 			this.LOG.info("Nenhum cidadão encontrado.");
-			return citizen;
-		} else {
-			this.LOG.info("Cidadão encontrado com sucesso");
-			return citizen;
+			throw new Exception("Cidadão está nulo.");
 		}
+
+		this.LOG.info("Cidadão encontrado com sucesso");
+		return citizen;
 
 	}
 
-	public CitizenDTO getById(Integer id) {
+	public CitizenDTO getById(Integer id) throws Exception {
 		this.LOG.info("Buscando cidadão no Banco...");
 		Citizen citizen = this.citizenRepository.findAllById(id);
 
 		if (citizen == null) {
 			this.LOG.info("Nenhum cidadão encontrado.");
-			return new CitizenDTO(citizen);
-		} else {
-			this.LOG.info("Cidadão encontrado com sucesso!");
-			return new CitizenDTO(citizen);
+			throw new Exception("Cidadão não encontrado.");
 		}
+
+		this.LOG.info("Cidadão encontrado com sucesso!");
+		return new CitizenDTO(citizen);
+
 	}
 
-	public List<CitizenDTO> getCitizensByName(String name) {
+	public List<CitizenDTO> getCitizensByName(String name) throws Exception {
 		this.LOG.info("Buscando cidadão por nome no Banco...");
 		List<CitizenDTO> citizensDTO = new ArrayList<>();
 		Iterable<Citizen> itarable = this.citizenRepository.findByName(name);
@@ -103,22 +104,22 @@ public class CitizenService {
 
 		if (citizensDTO == null || citizensDTO.isEmpty()) {
 			this.LOG.info("Nenhum cidadão encontrado no Banco.");
-			return citizensDTO;
-		} else {
-			this.LOG.info("Cidadãos encontrados com sucesso!");
-			return citizensDTO;
+			throw new Exception("Cidadão está nulo.");
 		}
+
+		this.LOG.info("Cidadãos encontrados com sucesso!");
+		return citizensDTO;
 
 	}
 
-	public List<CitizenDTO> getCitizensByMonth(Integer month) {
+	public List<CitizenDTO> getCitizensByMonth(Integer month) throws Exception {
 		List<CitizenDTO> citizensDTO = new ArrayList<>();
 		this.LOG.info("Buscando cidadão por mês no Banco...");
 		List<Citizen> citizens = this.citizenRepository.findByMonth(month);
 
 		if (citizens == null || citizens.isEmpty()) {
 			this.LOG.info("Nenhum cidadão encontrado no Banco.");
-			return citizensDTO;
+			throw new Exception("Cidadão está nulo.");
 		}
 
 		for (Citizen citizen : citizens) {
@@ -132,14 +133,14 @@ public class CitizenService {
 		return citizensDTO;
 	}
 
-	public List<CitizenDTO> getCitizensByAge(Integer age) {
+	public List<CitizenDTO> getCitizensByAge(Integer age) throws Exception {
 		List<CitizenDTO> citizensDTO = new ArrayList<>();
 		this.LOG.info("Buscando cidadão por idade no Banco...");
 		List<Citizen> citizens = this.citizenRepository.findByAge(age);
 
 		if (citizens == null || citizens.isEmpty()) {
 			this.LOG.info("Nenhum cidadão encontrado.");
-			return citizensDTO;
+			throw new Exception("Cidadão está nulo.");
 		}
 
 		for (Citizen citizen : citizens) {
@@ -152,8 +153,9 @@ public class CitizenService {
 		return citizensDTO;
 	}
 
-	public ResponseEntity<HttpStatus> create(CreateCitizenAndUserDTO createCitizenAndUserDTO) throws IllegalAccessException {
-		
+	public ResponseEntity<HttpStatus> create(CreateCitizenAndUserDTO createCitizenAndUserDTO)
+			throws IllegalAccessException {
+
 		if (createCitizenAndUserDTO == null) {
 			throw new IllegalAccessException("O cidadão está nulo!");
 		}
@@ -170,7 +172,6 @@ public class CitizenService {
 			throw new IllegalAccessException("CPF inválido");
 		}
 
-		
 		Citizen citizen = new Citizen();
 		citizen.setName(createCitizenAndUserDTO.getName());
 		citizen.setLastname(createCitizenAndUserDTO.getLastname());

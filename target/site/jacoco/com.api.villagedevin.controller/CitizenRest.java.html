@@ -35,32 +35,32 @@ public class CitizenRest {
 	}
 
 	@GetMapping(&quot;/list-names&quot;)
-	public List&lt;String&gt; listNames() {
+	public List&lt;String&gt; listNames() throws Exception {
 <span class="nc" id="L39">		return citizenService.listCitizensNames();</span>
 	}
 
 	@GetMapping(&quot;/list-citizens/{id}&quot;)
-	public Citizen listCitizensDetails(@PathVariable(&quot;id&quot;) Integer id) {
+	public Citizen listCitizensDetails(@PathVariable(&quot;id&quot;) Integer id) throws Exception {
 <span class="nc" id="L44">		return citizenService.listCitizens(id);</span>
 	}
 
 	@GetMapping(&quot;/{id}&quot;)
-	public CitizenDTO getById(@PathVariable(&quot;id&quot;) Integer id) {
+	public CitizenDTO getById(@PathVariable(&quot;id&quot;) Integer id) throws Exception {
 <span class="nc" id="L49">		return citizenService.getById(id);</span>
 	}
 
 	@GetMapping(&quot;/filter&quot;)
-	public List&lt;CitizenDTO&gt; getCitizensByFilter(@RequestParam(&quot;name&quot;) String name) {
+	public List&lt;CitizenDTO&gt; getCitizensByFilter(@RequestParam(&quot;name&quot;) String name) throws Exception {
 <span class="nc" id="L54">		return citizenService.getCitizensByName(name);</span>
 	}
 
 	@GetMapping(&quot;/filter-month&quot;)
-	public List&lt;CitizenDTO&gt; getCitizensByMonth(@RequestParam(&quot;month&quot;) Integer month) {
+	public List&lt;CitizenDTO&gt; getCitizensByMonth(@RequestParam(&quot;month&quot;) Integer month) throws Exception {
 <span class="nc" id="L59">		return citizenService.getCitizensByMonth(month);</span>
 	}
 
 	@GetMapping(&quot;/filter-age&quot;)
-	public List&lt;CitizenDTO&gt; getCitizensByAge(@RequestParam(&quot;age&quot;) Integer age) {
+	public List&lt;CitizenDTO&gt; getCitizensByAge(@RequestParam(&quot;age&quot;) Integer age) throws Exception {
 <span class="nc" id="L64">		return citizenService.getCitizensByAge(age);</span>
 	}
 

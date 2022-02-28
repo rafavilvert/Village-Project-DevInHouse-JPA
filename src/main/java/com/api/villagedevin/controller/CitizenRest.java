@@ -35,32 +35,32 @@ public class CitizenRest {
 	}
 
 	@GetMapping("/list-names")
-	public List<String> listNames() {
+	public List<String> listNames() throws Exception {
 		return citizenService.listCitizensNames();
 	}
 
 	@GetMapping("/list-citizens/{id}")
-	public Citizen listCitizensDetails(@PathVariable("id") Integer id) {
+	public Citizen listCitizensDetails(@PathVariable("id") Integer id) throws Exception {
 		return citizenService.listCitizens(id);
 	}
 
 	@GetMapping("/{id}")
-	public CitizenDTO getById(@PathVariable("id") Integer id) {
+	public CitizenDTO getById(@PathVariable("id") Integer id) throws Exception {
 		return citizenService.getById(id);
 	}
 
 	@GetMapping("/filter")
-	public List<CitizenDTO> getCitizensByFilter(@RequestParam("name") String name) {
+	public List<CitizenDTO> getCitizensByFilter(@RequestParam("name") String name) throws Exception {
 		return citizenService.getCitizensByName(name);
 	}
 
 	@GetMapping("/filter-month")
-	public List<CitizenDTO> getCitizensByMonth(@RequestParam("month") Integer month) {
+	public List<CitizenDTO> getCitizensByMonth(@RequestParam("month") Integer month) throws Exception {
 		return citizenService.getCitizensByMonth(month);
 	}
 
 	@GetMapping("/filter-age")
-	public List<CitizenDTO> getCitizensByAge(@RequestParam("age") Integer age) {
+	public List<CitizenDTO> getCitizensByAge(@RequestParam("age") Integer age) throws Exception {
 		return citizenService.getCitizensByAge(age);
 	}
 
