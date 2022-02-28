@@ -28,7 +28,7 @@ public class ValidationUtil {
 			return false;
 		}
 
-		final Pattern pattern = Pattern.compile("(^\\d{3}\\x2E\\d{3}\\x2E\\d{3}\\x2D\\d{2}$)");
+		final Pattern pattern = Pattern.compile("^[0-9]{3}.?[0-9]{3}.?[0-9]{3}-?[0-9]{2}");
 		return pattern.matcher(cpf).matches();
 	}
 

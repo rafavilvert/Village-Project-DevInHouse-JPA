@@ -4,8 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.api.villagedevin.model.persistence.Citizen;
-import com.api.villagedevin.model.persistence.User;
 import com.api.villagedevin.model.repository.CitizenRepository;
 import com.api.villagedevin.model.transport.CitizenDTO;
 import com.api.villagedevin.model.transport.CreateCitizenAndUserDTO;
@@ -206,12 +208,51 @@ public class CitizenServiceTest {
 				() -> citizenService.create(createCitizenAndUserDTO));
 		assertEquals("Sobrenome inválido", exceptionlastname3.getMessage());
 
-		createCitizenAndUserDTO.setLastname("Vilvert");
+		createCitizenAndUserDTO.setLastname("Rafael");
+
+		IllegalArgumentException exceptionCPF1 = assertThrowsExactly(IllegalArgumentException.class,
+				() -> citizenService.create(createCitizenAndUserDTO));
+		assertEquals("CPF inválido", exceptionCPF1.getMessage());
+
+		createCitizenAndUserDTO.setCpf("cpf");
+		IllegalArgumentException exceptionCPF2 = assertThrowsExactly(IllegalArgumentException.class,
+				() -> citizenService.create(createCitizenAndUserDTO));
+		assertEquals("CPF inválido", exceptionCPF2.getMessage());
+
+		createCitizenAndUserDTO.setCpf("123CPF5");
+		IllegalArgumentException exceptionCPF3 = assertThrowsExactly(IllegalArgumentException.class,
+				() -> citizenService.create(createCitizenAndUserDTO));
+		assertEquals("CPF inválido", exceptionCPF3.getMessage());
+
+		createCitizenAndUserDTO.setCpf("65478987456");
+
 
 	}
 
 	@Test
-	void createCitizen() {
+	void createCitizenSuccesses() {
+
+		Citizen citizen = new Citizen();
+		citizen.setName("Teste");
+		citizen.setLastname("Silva");
+		citizen.setCPF("65478987456");
+		citizen.setExpense(3000.00);
+		citizen.setIncome(10000.00);
+		citizen.setDataNascimento(LocalDate.now());
+		
+		CreateCitizenAndUserDTO createCitizenAndUserDTO = new CreateCitizenAndUserDTO();
+		createCitizenAndUserDTO.setName(citizen.getName());
+		createCitizenAndUserDTO.setLastname(citizen.getLastname());
+		createCitizenAndUserDTO.setCpf(citizen.getCPF());
+		createCitizenAndUserDTO.setExpense(citizen.getExpense());
+		createCitizenAndUserDTO.setIncome(citizen.getIncome());
+		createCitizenAndUserDTO.setBirthDate(citizen.getDataNascimento());
+
+		when(citizenRepository.save(citizen)).thenReturn(citizen);
+
+		Citizen citizen2 = citizenService.create(createCitizenAndUserDTO);
+
+		assertNotNull(citizen2);
 
 	}
 

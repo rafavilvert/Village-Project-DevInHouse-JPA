@@ -67,21 +67,24 @@ public class CitizenRest {
 //	
 //	@PreAuthorize(&quot;hasAnyRole('ADMIN')&quot;)
 	@PostMapping(&quot;/create&quot;)
-	public ResponseEntity&lt;HttpStatus&gt; create(@RequestBody CreateCitizenAndUserDTO createCitizenAndUserDTO) throws IllegalAccessException {
-<span class="nc" id="L71">		return this.citizenService.create(createCitizenAndUserDTO);</span>
+	public ResponseEntity&lt;Citizen&gt; create(@RequestBody CreateCitizenAndUserDTO createCitizenAndUserDTO)
+			throws IllegalAccessException {
+<span class="nc" id="L72">		Citizen citizen = this.citizenService.create(createCitizenAndUserDTO);</span>
+<span class="nc" id="L73">		return ResponseEntity.status(HttpStatus.CREATED).body(citizen);</span>
+
 	}
 
 //	
 	@DeleteMapping(&quot;/delete/{id}&quot;)
 	public ResponseEntity&lt;HttpStatus&gt; delete(@PathVariable Integer id) {
-<span class="nc" id="L77">	return this.citizenService.delete(id);</span>
+<span class="nc" id="L80">		return this.citizenService.delete(id);</span>
 	}
 
 //	
 //	@PreAuthorize(&quot;hasAnyRole('ADMIN')&quot;)
 	@GetMapping(&quot;/village-report&quot;)
 	public VillageReportDTO getReport() throws IllegalAccessException {
-<span class="nc" id="L84">		return citizenService.getReport();</span>
+<span class="nc" id="L87">		return citizenService.getReport();</span>
 	}
 
 }
