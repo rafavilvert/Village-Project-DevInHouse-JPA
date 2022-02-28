@@ -10,8 +10,8 @@ This project was developed with Spring Boot JPA and RabbitMQ.<br>
 * [Spring Dev Tools](https://docs.spring.io/spring-boot/docs/current/reference/html/using.html)
 * [Spring Mail](https://docs.spring.io/spring-boot/docs/2.0.x/reference/html/boot-features-email.html)
 * [Spring Postgres](https://start.spring.io/)
-* [Sring JWT](https://jwt.io/)
-* [Sring JPA](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#reference)
+* [Spring JWT](https://jwt.io/)
+* [Spring JPA](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#reference)
 * [RabbitMQ](https://www.rabbitmq.com/) 
 
 ## Project: 
