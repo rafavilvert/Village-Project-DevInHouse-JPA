@@ -51,21 +51,4 @@ public class VillageReportPDFConsumer {
 
 	}
 
-//	@RabbitListener(queues = "devin.pix")
-//	public void reciveMessage(PixMessageDTO message) {
-//		System.out.println(message);
-//		message.addRetry();
-//		if (message.isValid()) {
-//			/// faz o PIX
-//			System.out.println("Valido");
-//		} else {
-//			if (message.getRetry() <= 3) {
-//				System.out.println("Reenviando para fila");
-//				amqpService.convertAndSend("direct.pix", "devin.pix", message);
-//			} else {
-//				System.out.println("Nao Valido"); //Enviar para a DLX
-//			}
-//		}
-//	}
-
 }
