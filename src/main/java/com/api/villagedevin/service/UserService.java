@@ -102,12 +102,15 @@ public class UserService implements UserDetailsService {
 
 	}
 
-	public User getUserById(Integer id) {
-		User user = userRepository.findUserById(id);
+	public User getUserById(Integer id) throws Exception {
 		this.LOG.info("Buscando Usuário no Banco por Id...");
-		List<String> roles = userRepository.fingRolesByUserId(id);
-		user.setRoles(roles);
-		return userRepository.findUserById(id);
+		User user = userRepository.findUserById(id);
+		
+		if (user == null) {
+			throw new Exception("Usuário não encontrado.");
+		}
+		
+		return user;
 	}
 
 	public static UserSpringSecurity authenticated() {

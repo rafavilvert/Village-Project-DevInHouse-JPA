@@ -72,10 +72,10 @@ public class UserService implements UserDetailsService {
 
 	@Transactional(value = TxType.REQUIRED)
 	public void update(User user) {
-<span class="nc" id="L75">		this.LOG.info(&quot;Atualizando usuário...&quot;);</span>
-<span class="nc" id="L76">		userRepository.save(user);</span>
-<span class="nc" id="L77">		this.LOG.info(&quot;Usuário atualizado.&quot;);</span>
-<span class="nc" id="L78">	}</span>
+<span class="fc" id="L75">		this.LOG.info(&quot;Atualizando usuário...&quot;);</span>
+<span class="fc" id="L76">		userRepository.save(user);</span>
+<span class="fc" id="L77">		this.LOG.info(&quot;Usuário atualizado.&quot;);</span>
+<span class="fc" id="L78">	}</span>
 
 	public User create(User user) throws IllegalArgumentException {
 <span class="fc bfc" id="L81" title="All 2 branches covered.">		if (user == null) {</span>
@@ -102,41 +102,44 @@ public class UserService implements UserDetailsService {
 
 	}
 
-	public User getUserById(Integer id) {
-<span class="nc" id="L106">		User user = userRepository.findUserById(id);</span>
-<span class="nc" id="L107">		this.LOG.info(&quot;Buscando Usuário no Banco por Id...&quot;);</span>
-<span class="nc" id="L108">		List&lt;String&gt; roles = userRepository.fingRolesByUserId(id);</span>
-<span class="nc" id="L109">		user.setRoles(roles);</span>
-<span class="nc" id="L110">		return userRepository.findUserById(id);</span>
+	public User getUserById(Integer id) throws Exception {
+<span class="fc" id="L106">		this.LOG.info(&quot;Buscando Usuário no Banco por Id...&quot;);</span>
+<span class="fc" id="L107">		User user = userRepository.findUserById(id);</span>
+		
+<span class="fc bfc" id="L109" title="All 2 branches covered.">		if (user == null) {</span>
+<span class="fc" id="L110">			throw new Exception(&quot;Usuário não encontrado.&quot;);</span>
+		}
+		
+<span class="fc" id="L113">		return user;</span>
 	}
 
 	public static UserSpringSecurity authenticated() {
 		try {
-<span class="nc" id="L115">			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span>
-<span class="nc" id="L116">			return new UserSpringSecurity((String) authentication.getPrincipal(), null, new ArrayList&lt;&gt;());</span>
-<span class="nc" id="L117">		} catch (Exception e) {</span>
-<span class="nc" id="L118">			return null;</span>
+<span class="nc" id="L118">			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span>
+<span class="nc" id="L119">			return new UserSpringSecurity((String) authentication.getPrincipal(), null, new ArrayList&lt;&gt;());</span>
+<span class="nc" id="L120">		} catch (Exception e) {</span>
+<span class="nc" id="L121">			return null;</span>
 		}
 	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		try {
-<span class="nc" id="L125">			User user = getUser(username);</span>
-<span class="nc" id="L126">			Set&lt;String&gt; roles = new HashSet&lt;String&gt;();</span>
-<span class="nc bnc" id="L127" title="All 2 branches missed.">			for (String listRoles : user.getRoles()) {</span>
-<span class="nc" id="L128">				roles.add(listRoles);</span>
-<span class="nc" id="L129">			}</span>
-<span class="nc" id="L130">			return new UserSpringSecurity(user.getEmail(), user.getPassword(), roles);</span>
-<span class="nc" id="L131">		} catch (UsernameNotFoundException e) {</span>
+<span class="fc" id="L128">			User user = getUser(username);</span>
+<span class="fc" id="L129">			Set&lt;String&gt; roles = new HashSet&lt;String&gt;();</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">			for (String listRoles : user.getRoles()) {</span>
+<span class="fc" id="L131">				roles.add(listRoles);</span>
+<span class="fc" id="L132">			}</span>
+<span class="fc" id="L133">			return new UserSpringSecurity(user.getEmail(), user.getPassword(), roles);</span>
+<span class="fc" id="L134">		} catch (UsernameNotFoundException e) {</span>
 
-<span class="nc" id="L133">			throw new UsernameNotFoundException(username);</span>
+<span class="fc" id="L136">			throw new UsernameNotFoundException(username);</span>
 		}
 
 	}
 
 	public User getUser(String email) {
-<span class="nc" id="L139">		return userRepository.findUserByEmail(email);</span>
+<span class="fc" id="L142">		return userRepository.findUserByEmail(email);</span>
 	}
 
 }

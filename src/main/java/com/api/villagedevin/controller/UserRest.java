@@ -37,8 +37,12 @@ public class UserRest {
 	}
 
 	@GetMapping("/list-user/{id}")
-	public User getUserById(@PathVariable("id") Integer id) {
-		return userService.getUserById(id);
+	public ResponseEntity<User> getUserById(@PathVariable("id") Integer id) {
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(userService.getUserById(id));
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+		}
 	}
 
 	@PostMapping("/create")

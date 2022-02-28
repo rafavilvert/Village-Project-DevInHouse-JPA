@@ -22,12 +22,12 @@ public class UserSpringSecurity implements UserDetails {
 <span class="nc" id="L22">		this.authorities = authorities;</span>
 <span class="nc" id="L23">	}</span>
 
-<span class="nc" id="L25">	public UserSpringSecurity(String email, String password, Set&lt;String&gt; authorities) {</span>
-<span class="nc" id="L26">		this.email = email;</span>
-<span class="nc" id="L27">		this.password = password;</span>
-<span class="nc" id="L28">		this.authorities = authorities.stream().map(role -&gt; new SimpleGrantedAuthority(&quot;ROLE_&quot; + role))</span>
-<span class="nc" id="L29">				.collect(Collectors.toSet());</span>
-<span class="nc" id="L30">	}</span>
+<span class="fc" id="L25">	public UserSpringSecurity(String email, String password, Set&lt;String&gt; authorities) {</span>
+<span class="fc" id="L26">		this.email = email;</span>
+<span class="fc" id="L27">		this.password = password;</span>
+<span class="fc" id="L28">		this.authorities = authorities.stream().map(role -&gt; new SimpleGrantedAuthority(&quot;ROLE_&quot; + role))</span>
+<span class="fc" id="L29">				.collect(Collectors.toSet());</span>
+<span class="fc" id="L30">	}</span>
 
 	@Override
 	public Collection&lt;? extends GrantedAuthority&gt; getAuthorities() {
@@ -41,7 +41,7 @@ public class UserSpringSecurity implements UserDetails {
 
 	@Override
 	public String getUsername() {
-<span class="nc" id="L44">		return email;</span>
+<span class="fc" id="L44">		return email;</span>
 	}
 
 	@Override

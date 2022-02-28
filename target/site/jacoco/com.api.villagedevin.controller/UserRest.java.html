@@ -37,14 +37,18 @@ public class UserRest {
 	}
 
 	@GetMapping(&quot;/list-user/{id}&quot;)
-	public User getUserById(@PathVariable(&quot;id&quot;) Integer id) {
-<span class="nc" id="L41">		return userService.getUserById(id);</span>
+	public ResponseEntity&lt;User&gt; getUserById(@PathVariable(&quot;id&quot;) Integer id) {
+		try {
+<span class="nc" id="L42">			return ResponseEntity.status(HttpStatus.OK).body(userService.getUserById(id));</span>
+<span class="nc" id="L43">		} catch (Exception e) {</span>
+<span class="nc" id="L44">			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();</span>
+		}
 	}
 
 	@PostMapping(&quot;/create&quot;)
 	public ResponseEntity&lt;HttpStatus&gt; create(@RequestBody User user) throws IllegalAccessException {
-<span class="nc" id="L46">		this.userService.create(user);</span>
-<span class="nc" id="L47">		return ResponseEntity.status(HttpStatus.CREATED).build();</span>
+<span class="nc" id="L50">		this.userService.create(user);</span>
+<span class="nc" id="L51">		return ResponseEntity.status(HttpStatus.CREATED).build();</span>
 	}
 
 }

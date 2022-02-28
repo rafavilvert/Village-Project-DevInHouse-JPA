@@ -1,7 +1,9 @@
 package com.api.villagedevin.service;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.atLeastOnce;
@@ -14,6 +16,8 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.api.villagedevin.model.persistence.User;
@@ -71,12 +75,30 @@ public class UserServiceTest {
 	}
 
 	@Test
+	void getUserByIdUserNotFound() {
+
+		Exception exceptionUserNull = assertThrowsExactly(Exception.class, () -> userService.getUserById(null));
+		assertEquals("Usuário não encontrado.", exceptionUserNull.getMessage());
+
+	}
+
+	@Test
+	void getUserById() throws Exception {
+		User user = new User();
+		when(userRepository.findUserById(1)).thenReturn(user);
+
+		User user2 = userService.getUserById(1);
+
+		assertNotNull(user2);
+	}
+
+	@Test
 	void listAllUsersNotFound() {
 
 		List<User> userList = new ArrayList<User>();
 
 		when(userRepository.findAll()).thenReturn(userList);
-		
+
 		List<UserDTO> listAll = userService.listAll();
 		assertTrue(listAll.isEmpty());
 
@@ -89,7 +111,7 @@ public class UserServiceTest {
 
 		User user = new User();
 		userList.add(user);
-		
+
 		when(userRepository.findAll()).thenReturn(userList);
 		List<UserDTO> listAll = userService.listAll();
 		assertTrue(!listAll.isEmpty());
@@ -138,6 +160,31 @@ public class UserServiceTest {
 		assertNotNull(user2);
 		assertEquals("Simulating", user2.getPassword());
 
+	}
+
+	@Test
+	void updateUser() {
+		User user = new User();
+		when(userRepository.save(user)).thenReturn(user);
+		assertDoesNotThrow(() -> userService.update(user));
+	}
+
+	@Test
+	public void testLoadUserByEmailSuccessfully() throws Exception {
+		User user = new User("test@test.com", "123", List.of("USER"));
+		UserDTO userDTO = new UserDTO(user);
+		when(userRepository.findUserByEmail("test@test.com")).thenReturn(user);
+		final UserDetails userDetails = userService.loadUserByUsername("test@test.com");
+
+		assertNotNull(userDetails);
+		assertEquals(userDTO.getEmail(), userDetails.getUsername());
+	}
+
+	@Test
+	public void testLoadUserByEmailException() throws Exception {
+
+		when(userRepository.findUserByEmail("test@test.com")).thenThrow(UsernameNotFoundException.class);
+		assertThrows(UsernameNotFoundException.class, () -> userService.loadUserByUsername("test@test.com"));
 	}
 
 //	@Test
